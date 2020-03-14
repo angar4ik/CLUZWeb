@@ -1,0 +1,15 @@
+﻿@page "/create"
+@inject NavigationManager NavigationManager
+
+<h1>Create form</h1>
+
+<button class="btn btn-primary" @onclick="NavigateToCounterComponent">
+    Create
+</button>
+
+@code {
+    private void NavigateToCounterComponent()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -19,7 +19,7 @@ namespace CLUZWeb.Pages
 
         private void Create()
         {
-            
+            NavigationManager.NavigateTo("/create");
         }
     }
 }

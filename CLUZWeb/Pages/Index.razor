@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using CLUZWeb.Services
-@inject GamePoolService _gamePool;
+@inject GamePoolService _gamePool
+@inject NavigationManager NavigationManager
 
 <h1>Active games</h1>
 
@@ -35,4 +36,6 @@ else
     </table>
 }
 
-<button class="btn btn-primary" @onclick="Create">Create</button>
+<button class="btn btn-primary" @onclick="Create">
+    Create New
+</button>
