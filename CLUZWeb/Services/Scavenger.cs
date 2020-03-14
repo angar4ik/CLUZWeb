@@ -1,5 +1,4 @@
 ﻿using CLUZWeb.Models;
-using CLUZWeb.Pools;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
@@ -11,9 +10,9 @@ namespace CLUZWeb.Services
     public class Scavenger : BackgroundService
     {
         //private readonly IHubContext<PlayersHub> _hubContext;
-        private GamePool _gamePool;
+        private GamePoolService _gamePool;
 
-        public Scavenger(/*IHubContext<PlayersHub> hubContext, */GamePool gamePool)
+        public Scavenger(/*IHubContext<PlayersHub> hubContext, */GamePoolService gamePool)
         {
             _gamePool = gamePool;
             //_hubContext = hubContext;

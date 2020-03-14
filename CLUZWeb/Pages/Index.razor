@@ -1,5 +1,38 @@
 ﻿@page "/"
+@using CLUZWeb.Services
+@inject GamePoolService _gamePool;
 
-<h1>Hello, world!</h1>
+<h1>Active games</h1>
 
-Welcome to your new app.
+<p>List of games and details</p>
+
+@if (games.Count == 0)
+{
+    <p><em>Nothing to display...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Players</th>
+                <th>Status</th>
+                <th>Time Frame</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in games)
+            {
+                <tr>
+                    <td>@game.Name</td>
+                    <td>@game.MinimumPlayerCount</td>
+                    <td>@game.Status</td>
+                    <td>@game.TimeFrame</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button class="btn btn-primary" @onclick="Create">Create</button>

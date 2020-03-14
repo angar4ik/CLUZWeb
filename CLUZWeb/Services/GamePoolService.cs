@@ -1,10 +1,12 @@
 ﻿using CLUZWeb.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace CLUZWeb.Pools
+namespace CLUZWeb.Services
 {
-    public class GamePool
+    public class GamePoolService
     {
         //PlayerPool _playerPool;
         //public GamePool(PlayerPool playerPool)
@@ -13,6 +15,12 @@ namespace CLUZWeb.Pools
         //}
 
         public Dictionary<Guid, Game> Games { get; set; } = new Dictionary<Guid, Game>();
+
+        internal IList<Game> GetGames()
+        {
+            return Games.Values.ToList();
+        }
+
         public Guid AddGame(string name, string gamePing, double minimum)
         {
             Game newGame = new Game(name, gamePing, minimum);

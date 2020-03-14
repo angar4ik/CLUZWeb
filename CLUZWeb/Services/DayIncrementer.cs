@@ -1,6 +1,5 @@
 ﻿using CLUZWeb.Helpers;
 using CLUZWeb.Models;
-using CLUZWeb.Pools;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,10 +8,10 @@ namespace CLUZWeb.Services
 {
     public class DayIncrementer : BackgroundService
     {
-        private GamePool _gamePool;
+        private GamePoolService _gamePool;
         private AllPlayersReady _allPlayersReady;
 
-        public DayIncrementer(GamePool gamePool, AllPlayersReady allPlayersReady)
+        public DayIncrementer(GamePoolService gamePool, AllPlayersReady allPlayersReady)
         {
             _gamePool = gamePool;
             _allPlayersReady = allPlayersReady;
