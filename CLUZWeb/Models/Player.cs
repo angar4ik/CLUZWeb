@@ -147,13 +147,10 @@ namespace CLUZWeb.Models
         }
         #endregion
 
-        public Player(string name, IIdentity identity)
+        public Player(string name, Guid guid)
         {
-            //ConnId = connId;
             Name = name;
-            //Guid = guid;
-            Guid = Guid.NewGuid();
-            Identity = identity;
+            Guid = guid;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")

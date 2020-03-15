@@ -25,12 +25,12 @@ namespace CLUZWeb.Services
         //    return Games.Values.ToList();
         //}
 
-        public void ClearAfterLogOut(IIdentity identity)
+        public void ClearAfterLogOut(Guid guid)
         {
             foreach(Game g in Games.Values)
             {
-                if (g.PlayerInGame(identity))
-                    g.RemovePlayer(identity);
+                if (g.PlayerInGame(guid))
+                    g.RemovePlayer(guid);
 
                 
             }
@@ -41,11 +41,11 @@ namespace CLUZWeb.Services
             return Games.Values.ToList().Exists(g => g.Name == name);
         }
 
-        public Guid AddGame(string name, string gamePing, IIdentity identity)
+        public Guid AddGame(string name, string gamePing, Guid adminGuid)
         {
 
 
-            Game newGame = new Game(name, gamePing, identity);
+            Game newGame = new Game(name, gamePing, adminGuid);
 
             //newGame.OnAllReady += new EventHandler(AllPlayersReady.Handler);
 

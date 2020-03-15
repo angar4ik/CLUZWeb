@@ -1,9 +1,4 @@
 ﻿@page "/gameroom/{Guid:guid}"
-@using Models
-@using CLUZWeb.Services
-@inject NavigationManager NavigationManager
-@inject GamePoolService _gamePool
-@inject AuthenticationStateProvider _auth
 
 <h3>GameRoom</h3>
 
@@ -30,7 +25,7 @@ else
             }
         </tbody>
     </table>
-    @if (g.AdminIdentity == _auth.GetAuthenticationStateAsync().Result.User.Identity)
+    @if (g.AdminGuid == Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User)))
     {
         <div class="alert @StatusClass">@StatusMessage</div>
         <button class="btn btn-primary" @onclick="s => Start()">

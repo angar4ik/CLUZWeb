@@ -35,10 +35,8 @@ namespace CLUZWeb
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
-            //services.AddSingleton<WeatherForecastService>();
-
             services.AddSingleton<GamePoolService>();
-            //services.AddSingleton<PlayerPool>();
+
             //services.AddSingleton<Results>();
             //services.AddSingleton<AllPlayersReady>();
             //services.AddHostedService<DayIncrementer>();

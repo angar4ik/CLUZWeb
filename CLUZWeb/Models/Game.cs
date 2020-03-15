@@ -79,7 +79,7 @@ namespace CLUZWeb.Models
 
         public Guid Guid { get; }
 
-        public IIdentity AdminIdentity { get; }
+        public Guid AdminGuid { get; }
 
         private int _timeFrame = 0;
         public int TimeFrame
@@ -99,12 +99,12 @@ namespace CLUZWeb.Models
             }
         }
 
-        public Game(string name, string gamePin, IIdentity identity)
+        public Game(string name, string gamePin, Guid adminGuid)
         {
             Guid = Guid.NewGuid();
             Name = name;
             GamePin = ComputeSha256Hash(gamePin);
-            AdminIdentity = identity;
+            AdminGuid = adminGuid;
         }
         private void PlayerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -160,20 +160,18 @@ namespace CLUZWeb.Models
             }
         }
 
-        public bool PlayerInGame(IIdentity identity)
+        public bool PlayerInGame(Guid guid)
         {
-            return Players.Values.ToList().Exists(p => p.Identity == identity);
+            return Players.Values.ToList().Exists(p => p.Guid == guid);
         }
 
         /// <summary>
         /// Will remove player from players dict by guid key and will check game fullfillment
         /// </summary>
         /// <param name="playerGuid"></param>
-        public void RemovePlayer(IIdentity identity)
+        public void RemovePlayer(Guid guid)
         {
-            Guid pguid = Players.Values.ToList().Find(p => p.Identity == identity).Guid;
-
-            if (Players.Remove(pguid))
+            if (Players.Remove(guid))
             {
                 //resetting particular player
                 //Players[playerGuid] = new Player(Players[playerGuid].ConnId, Players[playerGuid].Name, playerGuid);

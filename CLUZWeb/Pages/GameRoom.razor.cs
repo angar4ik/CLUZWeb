@@ -1,14 +1,20 @@
 ﻿using CLUZWeb.Models;
+using CLUZWeb.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CLUZWeb.Pages
 {
     public partial class GameRoom
     {
+        [Inject] GamePoolService GamePool { get; set; }
+        [Inject] NavigationManager NavigationManager { get; set; }
+        [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+        [Inject] UserManager<IdentityUser> UserManager { get; set; }
+
         [Parameter]
         public Guid Guid { get; set; }
         IEnumerable<Player> players;
@@ -20,10 +26,10 @@ namespace CLUZWeb.Pages
         {
             try
             {
-                g = _gamePool.Games[Guid];
+                g = GamePool.Games[Guid];
                 players = g.Players.Values;
 
-                _gamePool.Games[Guid].GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
+                GamePool.Games[Guid].GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
             catch (KeyNotFoundException)
             {
@@ -45,7 +51,7 @@ namespace CLUZWeb.Pages
 
         private void Leave()
         {
-            g.RemovePlayer(_auth.GetAuthenticationStateAsync().Result.User.Identity);
+            g.RemovePlayer(Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User)));
             NavigationManager.NavigateTo("/");
         }
     }

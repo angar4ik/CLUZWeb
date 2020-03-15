@@ -1,5 +1,8 @@
 ﻿using CLUZWeb.Models;
+using CLUZWeb.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,6 +11,11 @@ namespace CLUZWeb.Pages
 {
     public partial class Join
     {
+        [Inject] GamePoolService GamePool { get; set; }
+        [Inject] NavigationManager NavigationManager { get; set; }
+        [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+        [Inject] UserManager<IdentityUser> UserManager { get; set; }
+
         [Parameter]
         public Guid Guid { get; set; }
         private JoinGame _joinGameModel = new JoinGame();
@@ -15,15 +23,15 @@ namespace CLUZWeb.Pages
         private string StatusClass;
         private void HandleValidSubmit()
         {
-            Game g = _gamePool.Games[Guid];
+            Game g = GamePool.Games[Guid];
             //check password and join the game
             if (g.GamePin == ComputeSha256Hash(_joinGameModel.Password)
                 && g.Status != GameState.Locked)
             {
                 //check if player already in the game
-                if (!g.PlayerInGame(_auth.GetAuthenticationStateAsync().Result.User.Identity))
+                if (!g.PlayerInGame(Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User))))
                 {
-                    Player player = new Player(_auth.GetAuthenticationStateAsync().Result.User.Identity.Name, _auth.GetAuthenticationStateAsync().Result.User.Identity);
+                    Player player = new Player(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name, Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User)));
                     g.AddPlayer(player);
                     NavigationManager.NavigateTo($"/gameroom/{g.Guid}");
                 }
