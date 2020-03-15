@@ -2,7 +2,7 @@
 
 namespace CLUZWeb.Models
 {
-    public class CreateGameModel
+    public class CreateGame
     {
         [Required]
         [StringLength(35, ErrorMessage = "{0} length must be between {2} and {1}.", MinimumLength = 1)]

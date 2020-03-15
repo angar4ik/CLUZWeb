@@ -1,11 +1,8 @@
 ﻿using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CLUZWeb.Pages
 {
@@ -13,8 +10,7 @@ namespace CLUZWeb.Pages
     {
         [Parameter]
         public Guid Guid { get; set; }
-
-        private JoinGameModel _joinGameModel = new JoinGameModel();
+        private JoinGame _joinGameModel = new JoinGame();
 
         private void HandleValidSubmit()
         {
@@ -23,7 +19,11 @@ namespace CLUZWeb.Pages
             if (g.GamePin == ComputeSha256Hash(_joinGameModel.Password)
                 && g.Status != GameState.Locked)
             {
-                NavigationManager.NavigateTo($"/Game/{g.Guid}");
+                Player player = new Player(_auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
+
+                g.AddPlayer(player);
+
+                NavigationManager.NavigateTo($"/gameroom/{g.Guid}");
             }
             else
             {

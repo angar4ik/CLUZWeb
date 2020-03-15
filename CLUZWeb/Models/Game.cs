@@ -19,6 +19,10 @@ namespace CLUZWeb.Models
     public class Game
     {
         //public event EventHandler OnAllReady;
+        public event PropertyChangedEventHandler GamePropertyChangedEvent;
+        public event PropertyChangedEventHandler PlayerPropertyChangedEvent;
+
+
         [JsonIgnore]
         public DateTime ChangeTimeSpamp { get; set; } = DateTime.UtcNow;
         [JsonIgnore]
@@ -49,7 +53,6 @@ namespace CLUZWeb.Models
         }
 
         private int _minimumPlayersCount = 4;
-
         public int MinimumPlayerCount
         {
             get
@@ -93,13 +96,14 @@ namespace CLUZWeb.Models
             }
         }
 
-        public Game(string name, string gamePin, double minimum)
+        public Game(string name, string gamePin)
         {
             Guid = Guid.NewGuid();
             Name = name;
             GamePin = ComputeSha256Hash(gamePin);
-            MinimumPlayerCount = (int)minimum;
         }
+
+
 
         private void PlayerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -114,11 +118,17 @@ namespace CLUZWeb.Models
                 AllPlayersReady = true;
                 //Log.Information("All players ready in '{game}'", Name);
             }
+
+            PlayerPropertyChangedEvent?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Player)));
         }
 
         private void GamePropertyChanged(string propName)
         {
             ChangeTimeSpamp = DateTime.UtcNow;
+
+            GamePropertyChangedEvent?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Game)));
 
             PropChanged = true;
         }
@@ -142,6 +152,8 @@ namespace CLUZWeb.Models
                 ListChanged = true;
 
                 PropChanged = true;
+
+                GamePropertyChanged(nameof(player));
 
                 //Log.Information("Game: Player '{0}' added to the game '{1}'", player.Name, this.Name);
             }

@@ -1,14 +1,12 @@
-﻿@page "/"
+﻿@page "/gameroom/{Guid:guid}"
+@using Models
 @using CLUZWeb.Services
-@inject GamePoolService _gamePool
 @inject NavigationManager NavigationManager
+@inject GamePoolService _gamePool
 
+<h3>GameRoom</h3>
 
-<h1>Active games</h1>
-
-<p>List of games and details</p>
-
-@if (games.Count() == 0)
+@if (players.Count() == 0)
 {
     <p><em>Nothing to display...</em></p>
 }
@@ -18,28 +16,22 @@ else
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Status</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var game in games)
+            @foreach (var player in players)
             {
                 <tr>
-                    <td>@game.Name</td>
-                    <td>@game.Status</td>
-                    <td>
+                    <td>@player.Name</td>
+                    <td>@player.State</td>
+                    @*<td>
                         <button class="btn btn-primary" @onclick="j => Join(game)">
                             Join
                         </button>
-                    </td>
+                    </td>*@
                 </tr>
             }
         </tbody>
     </table>
 }
-
-<br />
-<button class="btn btn-primary" @onclick="Create">
-    Create New
-</button>
-

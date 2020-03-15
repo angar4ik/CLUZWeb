@@ -21,11 +21,11 @@
 </EditForm>
 
 @code {
-    private CreateGameModel _createGameModel = new CreateGameModel();
+    private CreateGame _createGameModel = new CreateGame();
 
     private void HandleValidSubmit()
     {
-        _gamePool.AddGame(_createGameModel.Name, _createGameModel.Password, 4);
+        _gamePool.AddGame(_createGameModel.Name, _createGameModel.Password);
         NavigationManager.NavigateTo("/");
     }
 }

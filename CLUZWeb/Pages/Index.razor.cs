@@ -3,6 +3,7 @@ using CLUZWeb.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +11,22 @@ namespace CLUZWeb.Pages
 {
     public partial class Index
     {
-        private IList<Game> games;
+        private IEnumerable<Game> games;
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            games = _gamePool.GetGames();
+            try
+            {
+                games = _gamePool.Games.Values;
+
+                _gamePool.PropertyChanged += async (o, e) => await InvokeAsync(() => StateHasChanged());
+            }
+            catch (KeyNotFoundException)
+            {
+                new List<Game>();
+            }
+
+            
         }
 
         private void Create()

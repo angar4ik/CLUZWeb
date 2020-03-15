@@ -35,8 +35,6 @@ namespace CLUZWeb.Models
         #endregion
 
         #region Properties
-        public bool PropChanged { get; set; } = false;
-
         public string ConnId { get; }
 
         public Guid Guid { get; }
@@ -148,17 +146,16 @@ namespace CLUZWeb.Models
         }
         #endregion
 
-        public Player(string connId, string name, Guid guid)
+        public Player(string name)
         {
-            ConnId = connId;
+            //ConnId = connId;
             Name = name;
-            Guid = guid;
+            //Guid = guid;
+            Guid = Guid.NewGuid();
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
-            PropChanged = true;
-
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
