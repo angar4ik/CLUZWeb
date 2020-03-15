@@ -3,6 +3,7 @@
 @inject GamePoolService _gamePool
 @inject NavigationManager NavigationManager
 
+
 <h1>Active games</h1>
 
 <p>List of games and details</p>
@@ -30,12 +31,19 @@ else
                     <td>@game.MinimumPlayerCount</td>
                     <td>@game.Status</td>
                     <td>@game.TimeFrame</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="j => Join(game)">
+                            Join
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
+<br />
 <button class="btn btn-primary" @onclick="Create">
     Create New
 </button>
+

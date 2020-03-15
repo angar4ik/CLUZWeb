@@ -1,0 +1,18 @@
+﻿@page "/join/{Guid:guid}"
+@using Models
+@using CLUZWeb.Services
+@inject NavigationManager NavigationManager
+@inject GamePoolService _gamePool
+
+<h2>Join</h2>
+
+<EditForm autocomplete="off" Model="@_joinGameModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="content px-2">
+        <InputText class="form-inline" id="gpass" placeholder="Password" @bind-Value="@_joinGameModel.Password" />
+    </div>
+    <div class="content px-2">
+        <button class="btn btn-primary" type="submit">Join</button>
+    </div>
+</EditForm>

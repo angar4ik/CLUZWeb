@@ -21,5 +21,10 @@ namespace CLUZWeb.Pages
         {
             NavigationManager.NavigateTo("/create");
         }
+
+        private void Join(Game game)
+        {
+            NavigationManager.NavigateTo($"/join/{game.Guid}");
+        }
     }
 }

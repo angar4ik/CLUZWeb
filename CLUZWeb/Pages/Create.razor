@@ -1,15 +1,33 @@
 ﻿@page "/create"
+@using Models
+@using CLUZWeb.Services
 @inject NavigationManager NavigationManager
+@inject GamePoolService _gamePool
 
-<h1>Create form</h1>
+<h2>Create</h2>
 
-<button class="btn btn-primary" @onclick="NavigateToCounterComponent">
-    Create
-</button>
+<EditForm autocomplete="off" Model="@_createGameModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="content px-2">
+        <InputText class="form-inline" id="gname" placeholder="Name" @bind-Value="_createGameModel.Name" />
+    </div>
+    <div class="content px-2">
+        <InputText class="form-inline" id="gpass" placeholder="Password" @bind-Value="@_createGameModel.Password" />
+    </div>
+    <div class="content px-2">
+        <button class="btn btn-primary" type="submit">Create</button>
+    </div>
+</EditForm>
 
 @code {
-    private void NavigateToCounterComponent()
+    private CreateGameModel _createGameModel = new CreateGameModel();
+
+    private void HandleValidSubmit()
     {
+        _gamePool.AddGame(_createGameModel.Name, _createGameModel.Password, 4);
         NavigationManager.NavigateTo("/");
     }
 }
+
+
