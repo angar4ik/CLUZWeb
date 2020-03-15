@@ -9,7 +9,7 @@ namespace CLUZWeb.Helpers
     {
         public static async void AllowRandomPlayerToVote(Game g/*, IHubContext<PlayersHub> hubContext*/)
         {
-            if (Time.IsDay(g))
+            if (g.TimeOfDay == TimeOfDay.Day)
             {
                 Random rand = new Random();
 

@@ -1,6 +1,15 @@
 ﻿@page "/gameroom/{Guid:guid}"
 
-<h3>GameRoom</h3>
+<h3>Game: @g.Name</h3>
+
+<table class="table">
+    <tbody>
+        <tr>Status: @g.Status</tr>
+        <tr>TimeDay: @g.TimeOfDay</tr>
+        <tr>TimeFrame: @g.TimeFrame</tr>
+        <tr>Players: @g.Players.Count</tr>
+    </tbody>
+</table>
 
 @if (players.Count() == 0)
 {

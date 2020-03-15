@@ -36,8 +36,8 @@ namespace CLUZWeb
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
             services.AddSingleton<GamePoolService>();
+            services.AddSingleton<AllPlayersReadyService>();
 
-            //services.AddSingleton<Results>();
             //services.AddSingleton<AllPlayersReady>();
             //services.AddHostedService<DayIncrementer>();
         }

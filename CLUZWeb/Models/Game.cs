@@ -17,12 +17,18 @@ namespace CLUZWeb.Models
         Finished
     }
 
+    public enum TimeOfDay
+    {
+        Day,
+        Night
+    }
+
     public class Game
     {
         //public event EventHandler OnAllReady;
+        public event EventHandler AllPlayersReady;
         public event PropertyChangedEventHandler GamePropertyChangedEvent;
         public event PropertyChangedEventHandler PlayerPropertyChangedEvent;
-
 
         [JsonIgnore]
         public DateTime ChangeTimeSpamp { get; set; } = DateTime.UtcNow;
@@ -30,8 +36,8 @@ namespace CLUZWeb.Models
         public bool PropChanged { get; set; } = false;
         [JsonIgnore]
         public bool ListChanged { get; set; } = false;
-        [JsonIgnore]
-        public bool AllPlayersReady { get; set; } = false;
+        //[JsonIgnore]
+        //public bool AllPlayersReady { get; set; } = false;
         [JsonIgnore]
         public bool GameHasEnded { get; set; } = false;
 
@@ -81,6 +87,8 @@ namespace CLUZWeb.Models
 
         public Guid AdminGuid { get; }
 
+        public TimeOfDay TimeOfDay { get; set; }
+
         private int _timeFrame = 0;
         public int TimeFrame
         {
@@ -93,6 +101,10 @@ namespace CLUZWeb.Models
             {
                 if (value != _timeFrame)
                 {
+                    if (_timeFrame % 2 == 0)
+                        TimeOfDay = TimeOfDay.Day;
+                    else { TimeOfDay = TimeOfDay.Night; }
+                    
                     _timeFrame = value;
                     GamePropertyChanged("TimeFrame");
                 }
@@ -116,8 +128,10 @@ namespace CLUZWeb.Models
             {
                 //game.Players.Count >= game.MinimumPlayerCount
                 //set a flag all players ready
-                AllPlayersReady = true;
+                //AllPlayersReady = true;
                 //Log.Information("All players ready in '{game}'", Name);
+                AllPlayersReady?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Game)));
             }
 
             PlayerPropertyChangedEvent?.Invoke(this,

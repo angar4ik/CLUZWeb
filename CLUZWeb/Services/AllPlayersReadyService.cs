@@ -6,21 +6,10 @@ using System.Threading.Tasks;
 
 namespace CLUZWeb.Helpers
 {
-    public class AllPlayersReady
+    public class AllPlayersReadyService
     {
-        //IHubContext<PlayersHub> _hubContext;
-
-        //public AllPlayersReady(IHubContext<PlayersHub> hubContext)
-        //{
-        //    _hubContext = hubContext;
-        //}
-
-        #region AllPlayersReady
         public void Act(Game g)
         {
-            //Game g = sender as Game;
-            //Log.Information("GamePool: All players 'Ready' in game '{game}'", g.Name);
-
             #region Kill Results
             foreach (Player p in g.Players.Values.ToList())
             {
@@ -30,7 +19,7 @@ namespace CLUZWeb.Helpers
             #endregion
 
             //Votes should only by days
-            if (Time.IsDay(g) && g.TimeFrame >= 2 && g.Status == GameState.Locked)
+            if (g.TimeOfDay == TimeOfDay.Day && g.TimeFrame >= 2 && g.Status == GameState.Locked)
             {
                 #region Votes Results
                 List<Player> playersSortedList = new List<Player>();
@@ -73,8 +62,5 @@ namespace CLUZWeb.Helpers
             }
 
         }
-        #endregion
-
-        
     }
 }
