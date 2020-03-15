@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace CLUZWeb.Services
@@ -24,11 +25,27 @@ namespace CLUZWeb.Services
         //    return Games.Values.ToList();
         //}
 
-        public Guid AddGame(string name, string gamePing)
+        public void ClearAfterLogOut(IIdentity identity)
+        {
+            foreach(Game g in Games.Values)
+            {
+                if (g.PlayerInGame(identity))
+                    g.RemovePlayer(identity);
+
+                
+            }
+        }
+
+        public bool GameExists(string name)
+        {
+            return Games.Values.ToList().Exists(g => g.Name == name);
+        }
+
+        public Guid AddGame(string name, string gamePing, IIdentity identity)
         {
 
 
-            Game newGame = new Game(name, gamePing);
+            Game newGame = new Game(name, gamePing, identity);
 
             //newGame.OnAllReady += new EventHandler(AllPlayersReady.Handler);
 

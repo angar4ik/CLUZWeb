@@ -36,7 +36,14 @@ namespace CLUZWeb.Pages
 
         private void Join(Game game)
         {
-            NavigationManager.NavigateTo($"/join/{game.Guid}");
+            if (!game.PlayerInGame(_auth.GetAuthenticationStateAsync().Result.User.Identity))
+            {
+                NavigationManager.NavigateTo($"/join/{game.Guid}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"/gameroom/{game.Guid}");
+            }
         }
     }
 }

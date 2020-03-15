@@ -8,6 +8,7 @@
 <h2>Join</h2>
 
 <EditForm autocomplete="off" Model="@_joinGameModel" OnValidSubmit="HandleValidSubmit">
+    <div class="alert @StatusClass">@StatusMessage</div>
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="content px-2">

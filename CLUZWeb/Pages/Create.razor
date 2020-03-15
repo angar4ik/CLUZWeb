@@ -3,10 +3,12 @@
 @using CLUZWeb.Services
 @inject NavigationManager NavigationManager
 @inject GamePoolService _gamePool
+@inject AuthenticationStateProvider _auth
 
 <h2>Create</h2>
 
 <EditForm autocomplete="off" Model="@_createGameModel" OnValidSubmit="HandleValidSubmit">
+    <div class="alert @StatusClass">@StatusMessage</div>
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="content px-2">
@@ -19,15 +21,5 @@
         <button class="btn btn-primary" type="submit">Create</button>
     </div>
 </EditForm>
-
-@code {
-    private CreateGame _createGameModel = new CreateGame();
-
-    private void HandleValidSubmit()
-    {
-        _gamePool.AddGame(_createGameModel.Name, _createGameModel.Password);
-        NavigationManager.NavigateTo("/");
-    }
-}
 
 

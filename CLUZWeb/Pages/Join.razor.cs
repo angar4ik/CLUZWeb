@@ -11,7 +11,8 @@ namespace CLUZWeb.Pages
         [Parameter]
         public Guid Guid { get; set; }
         private JoinGame _joinGameModel = new JoinGame();
-
+        private string StatusMessage;
+        private string StatusClass;
         private void HandleValidSubmit()
         {
             Game g = _gamePool.Games[Guid];
@@ -19,15 +20,22 @@ namespace CLUZWeb.Pages
             if (g.GamePin == ComputeSha256Hash(_joinGameModel.Password)
                 && g.Status != GameState.Locked)
             {
-                Player player = new Player(_auth.GetAuthenticationStateAsync().Result.User.Identity.Name);
-
-                g.AddPlayer(player);
-
-                NavigationManager.NavigateTo($"/gameroom/{g.Guid}");
+                //check if player already in the game
+                if (!g.PlayerInGame(_auth.GetAuthenticationStateAsync().Result.User.Identity))
+                {
+                    Player player = new Player(_auth.GetAuthenticationStateAsync().Result.User.Identity.Name, _auth.GetAuthenticationStateAsync().Result.User.Identity);
+                    g.AddPlayer(player);
+                    NavigationManager.NavigateTo($"/gameroom/{g.Guid}");
+                }
+                else
+                {
+                    NavigationManager.NavigateTo($"/gameroom/{g.Guid}");
+                }
             }
             else
             {
-                //display snackbar error message
+                StatusClass = "alert-danger";
+                StatusMessage = "Password wrong or game locked";
             }
 
             string ComputeSha256Hash(string rawData)

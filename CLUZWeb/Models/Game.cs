@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -78,6 +79,8 @@ namespace CLUZWeb.Models
 
         public Guid Guid { get; }
 
+        public IIdentity AdminIdentity { get; }
+
         private int _timeFrame = 0;
         public int TimeFrame
         {
@@ -96,15 +99,13 @@ namespace CLUZWeb.Models
             }
         }
 
-        public Game(string name, string gamePin)
+        public Game(string name, string gamePin, IIdentity identity)
         {
             Guid = Guid.NewGuid();
             Name = name;
             GamePin = ComputeSha256Hash(gamePin);
+            AdminIdentity = identity;
         }
-
-
-
         private void PlayerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             ChangeTimeSpamp = DateTime.UtcNow;
@@ -149,11 +150,7 @@ namespace CLUZWeb.Models
 
                 CheckGameFulfillment();
 
-                ListChanged = true;
-
-                PropChanged = true;
-
-                GamePropertyChanged(nameof(player));
+                GamePropertyChanged("PlayerList");
 
                 //Log.Information("Game: Player '{0}' added to the game '{1}'", player.Name, this.Name);
             }
@@ -163,20 +160,27 @@ namespace CLUZWeb.Models
             }
         }
 
+        public bool PlayerInGame(IIdentity identity)
+        {
+            return Players.Values.ToList().Exists(p => p.Identity == identity);
+        }
+
         /// <summary>
         /// Will remove player from players dict by guid key and will check game fullfillment
         /// </summary>
         /// <param name="playerGuid"></param>
-        public void RemovePlayer(Guid playerGuid)
+        public void RemovePlayer(IIdentity identity)
         {
-            if (Players.Remove(playerGuid))
+            Guid pguid = Players.Values.ToList().Find(p => p.Identity == identity).Guid;
+
+            if (Players.Remove(pguid))
             {
                 //resetting particular player
                 //Players[playerGuid] = new Player(Players[playerGuid].ConnId, Players[playerGuid].Name, playerGuid);
 
                 CheckGameFulfillment();
 
-                ListChanged = true;
+                GamePropertyChanged("PlayerList");
             }
             else
             {

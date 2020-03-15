@@ -12,12 +12,16 @@ namespace CLUZWeb.Pages
         [Parameter]
         public Guid Guid { get; set; }
         IEnumerable<Player> players;
+        Game g;
+        private string StatusMessage;
+        private string StatusClass;
 
         protected override void OnInitialized()
         {
             try
             {
-                players = _gamePool.Games[Guid].Players.Values;
+                g = _gamePool.Games[Guid];
+                players = g.Players.Values;
 
                 _gamePool.Games[Guid].GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
@@ -25,10 +29,24 @@ namespace CLUZWeb.Pages
             {
                 players = new List<Player>();
             }
-            
-            
+        }
+        private void Start()
+        {
+            if(g.Status == GameState.Filled)
+            {
+                g.Status = GameState.Locked;
+            }
+            else if(g.Status == GameState.Unfilled)
+            {
+                StatusClass = "alert-danger";
+                StatusMessage = "Minimum 4 players needed";
+            }
         }
 
-        
+        private void Leave()
+        {
+            g.RemovePlayer(_auth.GetAuthenticationStateAsync().Result.User.Identity);
+            NavigationManager.NavigateTo("/");
+        }
     }
 }

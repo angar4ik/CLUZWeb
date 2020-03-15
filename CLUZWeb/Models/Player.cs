@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Principal;
 using System.Text.Json.Serialization;
 
 namespace CLUZWeb.Models
@@ -35,7 +36,7 @@ namespace CLUZWeb.Models
         #endregion
 
         #region Properties
-        public string ConnId { get; }
+        public IIdentity Identity { get; }
 
         public Guid Guid { get; }
 
@@ -146,12 +147,13 @@ namespace CLUZWeb.Models
         }
         #endregion
 
-        public Player(string name)
+        public Player(string name, IIdentity identity)
         {
             //ConnId = connId;
             Name = name;
             //Guid = guid;
             Guid = Guid.NewGuid();
+            Identity = identity;
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")

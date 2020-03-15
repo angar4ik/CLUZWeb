@@ -3,6 +3,7 @@
 @using CLUZWeb.Services
 @inject NavigationManager NavigationManager
 @inject GamePoolService _gamePool
+@inject AuthenticationStateProvider _auth
 
 <h3>GameRoom</h3>
 
@@ -25,13 +26,19 @@ else
                 <tr>
                     <td>@player.Name</td>
                     <td>@player.State</td>
-                    @*<td>
-                        <button class="btn btn-primary" @onclick="j => Join(game)">
-                            Join
-                        </button>
-                    </td>*@
                 </tr>
             }
         </tbody>
     </table>
+    @if (g.AdminIdentity == _auth.GetAuthenticationStateAsync().Result.User.Identity)
+    {
+        <div class="alert @StatusClass">@StatusMessage</div>
+        <button class="btn btn-primary" @onclick="s => Start()">
+            Start
+        </button>
+    }
+
+    <button class="btn btn-primary float-right" @onclick="s => Leave()">
+        Leave
+    </button>
 }
