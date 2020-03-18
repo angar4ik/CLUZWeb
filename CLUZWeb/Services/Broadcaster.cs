@@ -33,7 +33,7 @@
 
 //                foreach (Game game in _gamePool.Games.Values)
 //                {
-//                    if (game.ListChanged && game.GameHasEnded != true)
+//                    if (game.ListChanged && game.IsGameEnded != true)
 //                    {
 //                        //Log.Information("List change in '{game}'", game.Name);
 //                        //await _hubContext.Clients.All.SendAsync("PlayerListChanged", game.Players.Values.ToList(), game.Guid);
@@ -42,7 +42,7 @@
 //                        game.ListChanged = false;
 //                    }
 
-//                    if (game.PropChanged && game.GameHasEnded != true)
+//                    if (game.PropChanged && game.IsGameEnded != true)
 //                    {
 //                        //Log.Information("Prop change in game '{name}'", game.Name);
 //                        //await _hubContext.Clients.All.SendAsync("GameChanged", game, game.Guid);
@@ -55,7 +55,7 @@
 
 //                    foreach (Player p in game.Players.Values)
 //                    {
-//                        if (p.PropChanged && game.GameHasEnded != true)
+//                        if (p.PropChanged && game.IsGameEnded != true)
 //                        {
 //                            //Log.Information("'{player}' prop change in game '{game}'", p.Name, game.Name);
 //                            //await _hubContext.Clients.All.SendAsync("PlayerChanged", p, game.Guid);

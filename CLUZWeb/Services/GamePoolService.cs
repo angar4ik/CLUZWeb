@@ -8,32 +8,10 @@ namespace CLUZWeb.Services
 {
     public class GamePoolService
     {
-        //PlayerPool _playerPool;
-        //public GamePool(PlayerPool playerPool)
-        //{
-        //    _playerPool = playerPool;
-        //}
-
-
-
         public event PropertyChangedEventHandler GameAddedEvent;
 
         public IDictionary<Guid, Game> Games { get; set; } = new Dictionary<Guid, Game>();
-
-        //internal IList<Game> GetGames()
-        //{
-        //    return Games.Values.ToList();
-        //}
-
-        public void ClearAfterLogOut(Guid guid)
-        {
-            foreach(Game g in Games.Values)
-            {
-                if (g.PlayerInGame(guid))
-                    g.RemovePlayer(guid);               
-            }
-        }
-
+       
         public bool GameExists(string name)
         {
             return Games.Values.ToList().Exists(g => g.Name == name);

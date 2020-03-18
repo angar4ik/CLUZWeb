@@ -30,7 +30,6 @@ namespace CLUZWeb.Models
         private PlayerState _state = PlayerState.Idle;
         private PlayerRole _role = PlayerRole.None;
         private int _voteCount = 0;
-        private string _name = "";
         private bool allowedtovote = false;
         private bool hasVoted = false;
         #endregion

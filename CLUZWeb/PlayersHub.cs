@@ -276,7 +276,7 @@
 
 //            //    Log.Information("'{count}' alive players in '{game}'", alivePlayers, g.Name);
 
-//            //    if (g.GameHasEnded && alivePlayers == 0)
+//            //    if (g.IsGameEnded && alivePlayers == 0)
 //            //    {
 //            //        Log.Information("Game '{game}' has ended, removing from the pool", g.Name);
 //            //        g.ResetPlayers();

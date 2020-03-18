@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CLUZWeb.Events;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -32,15 +33,24 @@ namespace CLUZWeb.Models
     {
         public event PropertyChangedEventHandler GamePropertyChangedEvent;
         public event PropertyChangedEventHandler PlayerPropertyChangedEvent;
+        public event EventHandler GameEndedEvent;
+
+        protected virtual void OnGameEndedEvent(GameEndedEventArgs e)
+        {
+            EventHandler handler = GameEndedEvent;
+            handler?.Invoke(this, e);
+        }
 
         #region Fields
         private GameState _status = GameState.Unfilled;
         private int _timeFrame = 0;
+        private bool _isGameEnded = false;
         #endregion
 
         #region Props
         public DateTime ChangeTimeSpamp { get; set; } = DateTime.UtcNow;
-        public bool GameHasEnded { get; set; } = false;
+        public bool IsGameEnded { get; set; }
+        public string Winner { get; set; }
         public GameState Status
         {
             get
@@ -76,6 +86,9 @@ namespace CLUZWeb.Models
             {
                 if (value != _timeFrame)
                 {
+                    if (!IsGameEnded)
+                        IsGameEnd();
+
                     if (value % 2 == 0)
                         TimeOfDay = TimeOfDay.Day;
                     else { TimeOfDay = TimeOfDay.Night; }
@@ -114,14 +127,14 @@ namespace CLUZWeb.Models
             }
 
             PlayerPropertyChangedEvent?.Invoke(this,
-                new PropertyChangedEventArgs(nameof(Player)));
+                new PropertyChangedEventArgs(nameof(e)));
         }
         private void GamePropertyChanged(string propName)
         {
             ChangeTimeSpamp = DateTime.UtcNow;
 
             GamePropertyChangedEvent?.Invoke(this,
-                new PropertyChangedEventArgs(nameof(Game)));
+                new PropertyChangedEventArgs(nameof(propName)));
         }
         public void AddPlayer(Player player)
         {
@@ -295,7 +308,7 @@ namespace CLUZWeb.Models
             }
             #endregion
 
-            if (TimeFrame == 0 && Status == GameState.Locked)
+            if (TimeFrame == 0 && Status == GameState.Locked && !IsGameEnded)
             {
                 #region First Day to Night (Raffle)
                 //Status = GameState.Locked;
@@ -306,7 +319,7 @@ namespace CLUZWeb.Models
                 #endregion
             }
 
-            else if (TimeFrame >= 1 && Status == GameState.Locked)
+            else if (TimeFrame >= 1 && Status == GameState.Locked && !IsGameEnded)
             {
                 #region Regular Iteration
                 TimeFrame += 1;
@@ -386,6 +399,47 @@ namespace CLUZWeb.Models
             }
             else
                 Console.WriteLine("!!! Despite this player not a mafia, trying to kill");
+        }
+        public void IsGameEnd()
+        {
+            if (IsAnyMafiaLeftInGame() != true
+                && Status == GameState.Locked
+                && TimeFrame >= 2)
+            {
+                IsGameEnded = true;
+                OnGameEndedEvent(new GameEndedEventArgs("Citizens"));
+
+            }
+
+            else if (IsAnyMafiaLeftInGame() == true
+                && HowManyActiveInGame() < MinimumPlayerCount - 1
+                && Status == GameState.Locked)
+            {
+                IsGameEnded = true;
+                OnGameEndedEvent(new GameEndedEventArgs("Mafia"));
+            }
+
+            //Log.Information("Game {0} has {1} active players", g.Name, Helpers.Results.HowManyActiveInGame(g));
+            int HowManyActiveInGame()
+            {
+                return Players.Values.ToList().Count(p => p.Role != PlayerRole.Ghost && p.Role != PlayerRole.Kicked);
+            }
+
+            bool IsAnyMafiaLeftInGame()
+            {
+                int result = Players.Values.ToList().Count(p => p.Role == PlayerRole.Mafia);  //TrueForAll(p => p.State == PlayerState.Ready)
+
+                //Log.Information("{count} mafia(s) in game", result);
+
+                if (result > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
     }
 }

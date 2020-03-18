@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CLUZWeb.Events;
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
 
@@ -22,13 +23,26 @@ namespace CLUZWeb.Pages
                 _game = GamePool.Games[Guid];
                 _players = _game.Players.Values;
                 _player = _game.Players[GetCurrentUserGuid()];
-                GamePool.Games[Guid].GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
-                GamePool.Games[Guid].PlayerPropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
             catch (KeyNotFoundException)
             {
                 _players = new List<Player>();
                 _game = new Game("", "", Guid.NewGuid());
+            }
+        }
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            if (firstRender)
+            {
+                _game.GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
+                _game.PlayerPropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
+                _game.GameEndedEvent += (o, e) =>
+                {
+                    GameEndedEventArgs winner = e as GameEndedEventArgs;
+                    GamePool.Games.Remove(_game.Guid);
+                    NavigationManager.NavigateTo($"/winner/{winner.Winner}");
+                };
             }
         }
 

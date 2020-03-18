@@ -1,0 +1,19 @@
+﻿@page "/winner/{Input}"
+@inherits Base
+
+<div class="p-4">
+    <h3>Winner is: @Input!</h3>
+</div>
+
+@code{
+    [Parameter]
+    public string Input { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        await Task.Delay(5000);
+        NavigationManager.NavigateTo("/");
+    }
+
+}

@@ -26,7 +26,7 @@
 
 //                foreach (Game g in _gamePool.Games.Values.ToList())
 //                {
-//                    if ((DateTime.UtcNow - g.ChangeTimeSpamp).TotalHours > 1 || g.GameHasEnded == true)
+//                    if ((DateTime.UtcNow - g.ChangeTimeSpamp).TotalHours > 1 || g.IsGameEnded == true)
 //                    {
 //                        gameToRemove = g.Guid;
 //                       //Log.Information("Removing game {name} from pool", g.Name);
