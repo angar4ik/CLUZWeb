@@ -64,6 +64,7 @@ namespace CLUZWeb.Models
         public Guid Guid { get; }
         public Guid AdminGuid { get; }
         public TimeOfDay TimeOfDay { get; set; }
+        public bool IsGameVoting { get; set; }
         public int TimeFrame
         {
             get
@@ -308,9 +309,13 @@ namespace CLUZWeb.Models
             else if (TimeFrame >= 1 && Status == GameState.Locked)
             {
                 #region Regular Iteration
-
                 TimeFrame += 1;
                 //Log.Information("GamePool: Iterating timeframe for '{game}'. Now is '{time}'", Name, g.TimeFrame);
+                //set IsGameVoting flag
+                if (TimeOfDay == TimeOfDay.Day)
+                    IsGameVoting = true;
+                else
+                    IsGameVoting = false;
                 // allowing random player to vote
                 AllowRandomPlayerToVote();
                 #endregion

@@ -37,7 +37,7 @@ namespace CLUZWeb.Pages
             p.State = PlayerState.Ready;
         }
 
-        private void Action(Player p)
+        private async void Action(Player p)
         {
             //_player doing something with p
             if(GetActionBtnType() == GameAction.Vote)
@@ -52,9 +52,11 @@ namespace CLUZWeb.Pages
             }
             else if (GetActionBtnType() == GameAction.Guess)
             {
-                if (p.Role == PlayerRole.Mafia)
-                    Console.WriteLine($"{p.Name} is mafia");
                 _player.State = PlayerState.Ready;
+                if (p.Role == PlayerRole.Mafia)
+                    await AlertMessage("alert-info", $"{p.Name} is mafia!");
+                else
+                    await AlertMessage("alert-info", $"{p.Name} NOT a mafia!");
             }
         }
 
@@ -81,30 +83,38 @@ namespace CLUZWeb.Pages
         {
             if (_player.State == PlayerState.Idle
                 && _player.Role != PlayerRole.Mafia
-                && _player.Role != PlayerRole.Police)
+                && _player.Role != PlayerRole.Police
+                && _game.IsGameVoting == false)
                 return false;
             else
                 return true;
         }
 
-        private bool IsDisabledActionBtn()
+        private bool IsDisabledActionBtn(Player p)
         {
-            if ((_player.Role == PlayerRole.Mafia || _player.Role == PlayerRole.Police)
-                && _player.State != PlayerState.Ready)
+            if (p.Role == PlayerRole.Ghost || p.Role == PlayerRole.Kicked)
+                return true;
+            else if (_game.TimeOfDay == TimeOfDay.Night
+                && (_player.Role == PlayerRole.Mafia || _player.Role == PlayerRole.Police)
+                && _player.State == PlayerState.Idle)
+                return false;
+            else if (_game.TimeOfDay == TimeOfDay.Day
+                    && _player.AllowedToVote == true
+                    && _player.HasVoted == false)
                 return false;
             else
                 return true;
+
         }
 
         private GameAction GetActionBtnType()
         {
-            if (_player.AllowedToVote == true)
+            if (_game.IsGameVoting == true)
                 return GameAction.Vote;
             else if (_player.Role == PlayerRole.Mafia)
                 return GameAction.Kill;
             else if (_player.Role == PlayerRole.Police)
                 return GameAction.Guess;
-
             else
                 return GameAction.None;
         }
