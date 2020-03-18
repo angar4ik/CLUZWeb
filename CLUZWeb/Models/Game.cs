@@ -20,6 +20,14 @@ namespace CLUZWeb.Models
         Night
     }
 
+    public enum GameAction
+    {
+        Kill,
+        Guess,
+        Vote,
+        None
+    }
+
     public class Game
     {
         public event PropertyChangedEventHandler GamePropertyChangedEvent;
@@ -49,7 +57,7 @@ namespace CLUZWeb.Models
                 }
             }
         }
-        public int MinimumPlayerCount { get; set; } = 2;
+        public int MinimumPlayerCount { get; set; } = 4;
         public IDictionary<Guid, Player> Players { get; set; } = new Dictionary<Guid, Player>();
         public string Name { get; }
         public string GamePin { get; }
@@ -291,10 +299,50 @@ namespace CLUZWeb.Models
                 //Log.Information("GamePool: Iterating timeframe for '{game}'. Now is '{time}'", Name, g.TimeFrame);
 
                 // allowing random player to vote
-                //Voting.AllowRandomPlayerToVote(g, _hubContext);
+                AllowRandomPlayerToVote();
                 #endregion
             }
 
+        }
+        public void AllowRandomPlayerToVote()
+        {
+            if (TimeOfDay == TimeOfDay.Day)
+            {
+                Random rand = new Random();
+
+                //this shit should return true if any of active player still have AllowedToVote = false
+                while (Players.Values.ToList()
+                    .FindAll(p => p.Role != PlayerRole.Ghost && p.Role != PlayerRole.Kicked).ToList()
+                    .Exists(p => p.AllowedToVote == false))
+                {
+                    Player p = Players.ElementAt(rand.Next(0, Players.Count)).Value;
+
+                    if (p.AllowedToVote == false
+                        && IsPlayerActive(p) == true)
+                    {
+                        p.AllowedToVote = true;
+
+                        //await hubContext.Clients.All.SendAsync("SnackbarMessage", $"'{p.Name}' is voting", 3, Guid);
+
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Players.ToList().ForEach(p => p.Value.AllowedToVote = false);
+            }
+        }
+        private bool IsPlayerActive(Player p)
+        {
+            if (p.Role != PlayerRole.Ghost && p.Role != PlayerRole.Kicked)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

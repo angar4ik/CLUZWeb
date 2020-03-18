@@ -33,7 +33,7 @@ else
                     </p>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-info" disabled=@(IsDisabledActionBtn(p)) @onclick="() => Action(p)">@(GetActionBtnText(p))</button>
+                    <button type="button" class="btn btn-info" disabled=@(IsDisabledActionBtn(p)) @onclick="() => Action(p)">@(GetActionBtnType().ToString())</button>
                 </div>
             </li>
         }
