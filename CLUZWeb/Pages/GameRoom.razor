@@ -1,7 +1,13 @@
 ﻿@page "/gameroom/{Guid:guid}"
 @inherits Base
 
-<h3>Game: @_game.Name</h3>
+<h4>Game: @_game.Name</h4>
+<p>
+    <h5>
+        Player: @_player.Name
+    </h5>
+</p>
+
 
 <p>
     <span class="badge badge-pill badge-primary">@_game.Status</span>
@@ -33,7 +39,7 @@ else
                     </p>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-info" disabled=@(IsDisabledActionBtn(p)) @onclick="() => Action(p)">@(GetActionBtnType().ToString())</button>
+                    <button type="button" class="btn btn-info" disabled=@(IsDisabledActionBtn()) @onclick="() => Action(p)">@(GetActionBtnType().ToString())</button>
                 </div>
             </li>
         }

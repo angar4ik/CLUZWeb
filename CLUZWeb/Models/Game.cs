@@ -97,12 +97,19 @@ namespace CLUZWeb.Models
         {
             ChangeTimeSpamp = DateTime.UtcNow;
 
+            // ResetReadyStatus calls PlayerPropertyChanged again, and Ghost
+
             int howManyPlayersReady = Players.Values.ToList().FindAll(p => p.State == PlayerState.Ready).Count;
 
-            if (howManyPlayersReady >= this.MinimumPlayerCount)
+            //Console.WriteLine($"Ready: {howManyPlayersReady}");
+
+            if (howManyPlayersReady >= this.MinimumPlayerCount && howManyPlayersReady == Players.Count())
             {
+                ResetPlayersReadyState();
                 //Log.Information("All players ready in '{game}'", Name);
-                AllPlayersReady();
+                IncrementTimeFrame();
+
+                MakeReadyInactivePlayers();
             }
 
             PlayerPropertyChangedEvent?.Invoke(this,
@@ -215,11 +222,17 @@ namespace CLUZWeb.Models
         {
             foreach (Player p in this.Players.Values.ToList())
             {
-                if(!(p.Role == PlayerRole.Ghost || p.Role == PlayerRole.Kicked))
-                {
                     p.State = PlayerState.Idle;
+            }
+        }
+        public void MakeReadyInactivePlayers()
+        {
+            foreach (Player p in this.Players.Values.ToList())
+            {
+                if ((p.Role == PlayerRole.Ghost || p.Role == PlayerRole.Kicked))
+                {
+                    p.State = PlayerState.Ready;
                 }
-                    
             }
         }
         private int GiveMeANumber(int min, int max, HashSet<int> exclude)
@@ -250,7 +263,7 @@ namespace CLUZWeb.Models
                 return builder.ToString();
             }
         }
-        public void AllPlayersReady()
+        public void IncrementTimeFrame()
         {
             #region Kill Results
             foreach (Player p in Players.Values.ToList())
@@ -260,7 +273,7 @@ namespace CLUZWeb.Models
             }
             #endregion
 
-            //Votes should only by days
+            #region Voting
             if (TimeOfDay == TimeOfDay.Day && TimeFrame >= 2 && Status == GameState.Locked)
             {
                 #region Votes Results
@@ -279,12 +292,13 @@ namespace CLUZWeb.Models
                 //Log.Information("Votes over. Kicked name {0}", Players[playersSortedList[0].Guid].Name);
                 #endregion
             }
+            #endregion
 
             if (TimeFrame == 0 && Status == GameState.Locked)
             {
                 #region First Day to Night (Raffle)
                 //Status = GameState.Locked;
-                ResetPlayersReadyState();
+                //ResetPlayersReadyState();
                 Raffle();
                 TimeFrame += 1;
                 //LoInformation("GamePool: Iterating Timeframe with Raffle in game '{0}' now is '{1}'", Name, TimeFrame);
@@ -294,10 +308,9 @@ namespace CLUZWeb.Models
             else if (TimeFrame >= 1 && Status == GameState.Locked)
             {
                 #region Regular Iteration
-                ResetPlayersReadyState();
+
                 TimeFrame += 1;
                 //Log.Information("GamePool: Iterating timeframe for '{game}'. Now is '{time}'", Name, g.TimeFrame);
-
                 // allowing random player to vote
                 AllowRandomPlayerToVote();
                 #endregion
@@ -343,6 +356,31 @@ namespace CLUZWeb.Models
             {
                 return false;
             }
+        }
+        public void VoteRequest(Player sourcePlayer, Player targetPlayer)
+        {
+            //Log.Information("Request from '{0}' to kick '{1}'", _playerPool.Players[fromGuid].Name, _playerPool.Players[kickGuid].Name);
+
+            if (targetPlayer.Role != PlayerRole.Kicked || targetPlayer.Role != PlayerRole.Ghost)
+                targetPlayer.VoteCount += 1;
+            else
+                Console.WriteLine("!!! Trying to vote for inactive player");
+
+            sourcePlayer.HasVoted = true;
+
+            AllowRandomPlayerToVote();
+
+            //await _hubContext.Clients.All.SendAsync("SnackbarMessage", $"'{_playerPool.Players[fromGuid].Name}' voted to kick '{_playerPool.Players[kickGuid].Name}'", 5, g.Guid);
+        }
+        public void KillRequest(Player sourcePlayer, Player targetPlayer)
+        {
+            if (sourcePlayer.Role == PlayerRole.Mafia)
+            {
+                //Log.Information("Request from '{0}' to kill '{1}'", _playerPool.Players[fromGuid].Name, _playerPool.Players[killGuid].Name);
+                targetPlayer.KillRequest = true;
+            }
+            else
+                Console.WriteLine("!!! Despite this player not a mafia, trying to kill");
         }
     }
 }

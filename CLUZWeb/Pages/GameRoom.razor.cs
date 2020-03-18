@@ -40,8 +40,22 @@ namespace CLUZWeb.Pages
         private void Action(Player p)
         {
             //_player doing something with p
-            //GetActionBtnType(p)
-            p.State = PlayerState.Ready;
+            if(GetActionBtnType() == GameAction.Vote)
+            {
+                _game.VoteRequest(_player, p);
+                _player.State = PlayerState.Ready;
+            }
+            else if (GetActionBtnType() == GameAction.Kill)
+            {
+                _game.KillRequest(_player, p);
+                _player.State = PlayerState.Ready;
+            }
+            else if (GetActionBtnType() == GameAction.Guess)
+            {
+                if (p.Role == PlayerRole.Mafia)
+                    Console.WriteLine($"{p.Name} is mafia");
+                _player.State = PlayerState.Ready;
+            }
         }
 
         private async void Start(Game g)
@@ -73,15 +87,13 @@ namespace CLUZWeb.Pages
                 return true;
         }
 
-        private bool IsDisabledActionBtn(Player p)
+        private bool IsDisabledActionBtn()
         {
-            //if ((p.Role == PlayerRole.Mafia || p.Role == PlayerRole.Police)
-            //    && p.State != PlayerState.Ready)
-            //    return false;
-            //else
-            //    return true;
-
-            return false;
+            if ((_player.Role == PlayerRole.Mafia || _player.Role == PlayerRole.Police)
+                && _player.State != PlayerState.Ready)
+                return false;
+            else
+                return true;
         }
 
         private GameAction GetActionBtnType()
