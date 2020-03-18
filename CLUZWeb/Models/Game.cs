@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Security.Principal;
 using System.Text;
-using System.Text.Json.Serialization;
-
 namespace CLUZWeb.Models
 {
     public enum GameState
@@ -25,7 +22,6 @@ namespace CLUZWeb.Models
 
     public class Game
     {
-        public event EventHandler AllPlayersReadyEvent;
         public event PropertyChangedEventHandler GamePropertyChangedEvent;
         public event PropertyChangedEventHandler PlayerPropertyChangedEvent;
 
@@ -71,7 +67,7 @@ namespace CLUZWeb.Models
             {
                 if (value != _timeFrame)
                 {
-                    if (_timeFrame % 2 == 0)
+                    if (value % 2 == 0)
                         TimeOfDay = TimeOfDay.Day;
                     else { TimeOfDay = TimeOfDay.Night; }
 
@@ -98,8 +94,7 @@ namespace CLUZWeb.Models
             if (howManyPlayersReady >= this.MinimumPlayerCount)
             {
                 //Log.Information("All players ready in '{game}'", Name);
-                AllPlayersReadyEvent?.Invoke(this,
-                new PropertyChangedEventArgs(nameof(Game)));
+                AllPlayersReady();
             }
 
             PlayerPropertyChangedEvent?.Invoke(this,
@@ -246,6 +241,60 @@ namespace CLUZWeb.Models
 
                 return builder.ToString();
             }
+        }
+        public void AllPlayersReady()
+        {
+            #region Kill Results
+            foreach (Player p in Players.Values.ToList())
+            {
+                if (p.KillRequest == true)
+                    p.Role = PlayerRole.Ghost;
+            }
+            #endregion
+
+            //Votes should only by days
+            if (TimeOfDay == TimeOfDay.Day && TimeFrame >= 2 && Status == GameState.Locked)
+            {
+                #region Votes Results
+                List<Player> playersSortedList = new List<Player>();
+
+                if (Players.Count >= 2)
+                {
+                    //sort Players by Vote var
+                    playersSortedList = Players.Values.ToList().OrderByDescending(o => o.VoteCount).ToList();
+                    //assign kicked to first guid in sorted list
+                    Players[playersSortedList[0].Guid].Role = PlayerRole.Kicked;
+                }
+
+                ResetVotes();
+
+                //Log.Information("Votes over. Kicked name {0}", Players[playersSortedList[0].Guid].Name);
+                #endregion
+            }
+
+            if (TimeFrame == 0 && Status == GameState.Locked)
+            {
+                #region First Day to Night (Raffle)
+                //Status = GameState.Locked;
+                ResetPlayersReadyState();
+                Raffle();
+                TimeFrame += 1;
+                //LoInformation("GamePool: Iterating Timeframe with Raffle in game '{0}' now is '{1}'", Name, TimeFrame);
+                #endregion
+            }
+
+            else if (TimeFrame >= 1 && Status == GameState.Locked)
+            {
+                #region Regular Iteration
+                ResetPlayersReadyState();
+                TimeFrame += 1;
+                //Log.Information("GamePool: Iterating timeframe for '{game}'. Now is '{time}'", Name, g.TimeFrame);
+
+                // allowing random player to vote
+                //Voting.AllowRandomPlayerToVote(g, _hubContext);
+                #endregion
+            }
+
         }
     }
 }

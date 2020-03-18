@@ -19,23 +19,23 @@ else
     <ul class="list-group">
         @foreach (var p in _players)
         {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-                <h5>@p.Name</h5>
-                <p>
-                    @if (_game.AdminGuid == p.Guid)
-                    {
-                        <span class="badge badge-pill badge-primary">Admin</span>
-                    }
-                    <span class="badge badge-pill badge-primary">@p.State</span>
-                    <span class="badge badge-pill badge-primary">@p.Role</span>
-                    <span class="badge badge-primary badge-pill">@p.VoteCount</span>
-                </p>
-            </div>
-            <div>
-                <button type="button" class="btn btn-info disabled" @onclick="() => Action(p)">Action</button>
-            </div>
-        </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <h5>@p.Name</h5>
+                    <p>
+                        @if (_game.AdminGuid == p.Guid)
+                        {
+                            <span class="badge badge-pill badge-primary">Admin</span>
+                        }
+                        <span class="badge badge-pill badge-primary">@p.State</span>
+                        <span class="badge badge-pill badge-primary">@p.Role</span>
+                        <span class="badge badge-primary badge-pill">@p.VoteCount</span>
+                    </p>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-info" disabled=@(IsDisabledActionBtn(p)) @onclick="() => Action(p)">@(GetActionBtnText(p))</button>
+                </div>
+            </li>
         }
     </ul>
 
@@ -50,7 +50,7 @@ else
 
     @if (_game.Status == Models.GameState.Locked)
     {
-        <button class="btn btn-primary" @onclick="() => Ready(_player)">
+        <button class="btn btn-primary" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
             Ready
         </button>
     }

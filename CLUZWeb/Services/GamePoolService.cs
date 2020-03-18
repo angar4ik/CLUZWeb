@@ -1,12 +1,8 @@
-﻿using CLUZWeb.Helpers;
-using CLUZWeb.Models;
-using Microsoft.AspNetCore.Components;
+﻿using CLUZWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace CLUZWeb.Services
 {
@@ -18,7 +14,7 @@ namespace CLUZWeb.Services
         //    _playerPool = playerPool;
         //}
 
-        [Inject] AllPlayersReadyService AllPlayersReadyService { get; set; }
+
 
         public event PropertyChangedEventHandler GameAddedEvent;
 
@@ -47,7 +43,7 @@ namespace CLUZWeb.Services
         {
             Game newGame = new Game(name, gamePing, adminGuid);
 
-            newGame.AllPlayersReadyEvent += (o, e) => AllPlayersReadyService.Act(newGame);
+            //newGame.AllPlayersReadyEvent += (o, e) => AllPlayersReadyService.Act(newGame);
 
             Games.Add(newGame.Guid, newGame);
 

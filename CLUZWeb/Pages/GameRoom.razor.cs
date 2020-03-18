@@ -11,9 +11,10 @@ namespace CLUZWeb.Pages
         [Parameter]
         public Guid Guid { get; set; }
 
-        IEnumerable<Player> _players;
-        Game _game;
-        Player _player;
+        private IEnumerable<Player> _players;
+        private Game _game;
+        private Player _player;
+
         protected override void OnInitialized()
         {
             try
@@ -30,14 +31,16 @@ namespace CLUZWeb.Pages
             }
         }
 
-        private void Ready(Player player)
+        private void Ready(Player p)
         {
-            player.State = PlayerState.Ready;
+            p.State = PlayerState.Ready;
         }
 
-        private void Action(Player player)
+        private void Action(Player p)
         {
-
+            //_player doing something with p
+            //GetActionBtnText(p)
+            //TODO: actions -> enum (kill, guess, none)
         }
 
         private async void Start(Game g)
@@ -57,6 +60,32 @@ namespace CLUZWeb.Pages
         {
             g.RemovePlayer(_player.Guid);
             NavigationManager.NavigateTo("/");
+        }
+
+        private bool IsDisabledReadyBtn()
+        {
+            if (_player.State == PlayerState.Idle)
+                return false;
+            else
+                return true;
+        }
+
+        private bool IsDisabledActionBtn(Player p)
+        {
+            if (p.Role == PlayerRole.Mafia || p.Role == PlayerRole.Police)
+                return false;
+            else
+                return true;
+        }
+
+        private string GetActionBtnText(Player p)
+        {
+            if (p.Role == PlayerRole.Mafia)
+                return "Kill";
+            else if (p.Role == PlayerRole.Police)
+                return "Guess";
+            else
+                return "None";
         }
     }
 }
