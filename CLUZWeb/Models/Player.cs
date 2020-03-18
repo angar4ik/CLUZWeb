@@ -19,7 +19,7 @@ namespace CLUZWeb.Models
     public enum PlayerState
     {
         Idle,
-        Ready,
+        Ready
     }
 
     public class Player : INotifyPropertyChanged
@@ -36,26 +36,9 @@ namespace CLUZWeb.Models
         #endregion
 
         #region Properties
-        public IIdentity Identity { get; }
-
         public Guid Guid { get; }
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    NotifyPropertyChanged("Name");
-                }
-            }
-        }
+        public string Name { get; }
 
         [JsonIgnore]
         public bool KillRequest { get; set; }
@@ -72,7 +55,7 @@ namespace CLUZWeb.Models
                 if (value != _voteCount)
                 {
                     _voteCount = value;
-                    NotifyPropertyChanged("VoteCount");
+                    NotifyPropertyChanged(nameof(VoteCount));
                 }
             }
         }
@@ -89,7 +72,7 @@ namespace CLUZWeb.Models
                 if (value != _state)
                 {
                     _state = value;
-                    NotifyPropertyChanged("State");
+                    NotifyPropertyChanged(nameof(State));
                 }
             }
         }
@@ -107,7 +90,7 @@ namespace CLUZWeb.Models
                 if (value != _role)
                 {
                     _role = value;
-                    NotifyPropertyChanged("Role");
+                    NotifyPropertyChanged(nameof(Role));
                 }
             }
         }
@@ -124,7 +107,7 @@ namespace CLUZWeb.Models
                 if (value != allowedtovote)
                 {
                     allowedtovote = value;
-                    NotifyPropertyChanged("AllowedToVote");
+                    NotifyPropertyChanged(nameof(AllowedToVote));
                 }
             }
         }
@@ -141,18 +124,16 @@ namespace CLUZWeb.Models
                 if (value != hasVoted)
                 {
                     hasVoted = value;
-                    NotifyPropertyChanged("HasVoted");
+                    NotifyPropertyChanged(nameof(HasVoted));
                 }
             }
         }
         #endregion
-
         public Player(string name, Guid guid)
         {
             Name = name;
             Guid = guid;
         }
-
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

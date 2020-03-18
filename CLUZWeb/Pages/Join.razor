@@ -1,15 +1,22 @@
 ﻿@page "/join/{Guid:guid}"
+@inherits Base
 
 <h2>Join</h2>
 
 <EditForm autocomplete="off" Model="@_joinGameModel" OnValidSubmit="HandleValidSubmit">
-    <div class="alert @StatusClass">@StatusMessage</div>
+
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="content px-2">
-        <InputText class="form-inline" id="gpass" placeholder="Password" @bind-Value="@_joinGameModel.Password" />
-    </div>
-    <div class="content px-2">
-        <button class="btn btn-primary" type="submit">Join</button>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="content px-2">
+                <InputText class="form-control" placeholder="Password" @bind-Value="@_joinGameModel.Password" />
+                <small class="form-text text-muted">Game pin</small>
+            </div>
+            <div class="alert @StatusClass">@StatusMessage</div>
+            <div class="content px-2">
+                <button class="btn btn-primary" type="submit">Join</button>
+            </div>
+        </div>
     </div>
 </EditForm>

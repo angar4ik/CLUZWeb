@@ -1,25 +1,14 @@
-﻿using CLUZWeb.Data;
+﻿using System;
+using System.Collections.Generic;
 using CLUZWeb.Models;
-using CLUZWeb.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CLUZWeb.Pages
 {
-    public partial class Index : ComponentBase
+    public partial class Index
     {
         private IEnumerable<Game> games;
-        [Inject] GamePoolService GamePool { get; set; }
-        [Inject] NavigationManager NavigationManager { get; set; }
-        [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-        [Inject] UserManager<IdentityUser> UserManager { get; set; }
 
         protected override void OnInitialized()
         {
@@ -33,8 +22,6 @@ namespace CLUZWeb.Pages
             {
                 new List<Game>();
             }
-
-            
         }
 
         private void Create()
@@ -44,7 +31,7 @@ namespace CLUZWeb.Pages
 
         private void Join(Game game)
         {
-            if (!game.PlayerInGame(Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User))))
+            if (!game.PlayerInGame(GetCurrentUserGuid()))
             {
                 NavigationManager.NavigateTo($"/join/{game.Guid}");
             }

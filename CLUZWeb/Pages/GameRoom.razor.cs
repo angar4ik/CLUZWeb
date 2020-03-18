@@ -1,57 +1,61 @@
-﻿using CLUZWeb.Models;
-using CLUZWeb.Services;
+﻿using System;
+using System.Collections.Generic;
+using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 
 namespace CLUZWeb.Pages
 {
     public partial class GameRoom
     {
-        [Inject] GamePoolService GamePool { get; set; }
-        [Inject] NavigationManager NavigationManager { get; set; }
-        [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
-        [Inject] UserManager<IdentityUser> UserManager { get; set; }
-
+        //cames from page parameter
         [Parameter]
         public Guid Guid { get; set; }
-        IEnumerable<Player> players;
-        Game g;
-        private string StatusMessage;
-        private string StatusClass;
 
+        IEnumerable<Player> _players;
+        Game _game;
+        Player _player;
         protected override void OnInitialized()
         {
             try
             {
-                g = GamePool.Games[Guid];
-                players = g.Players.Values;
-
+                _game = GamePool.Games[Guid];
+                _players = _game.Players.Values;
+                _player = _game.Players[GetCurrentUserGuid()];
                 GamePool.Games[Guid].GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
             catch (KeyNotFoundException)
             {
-                players = new List<Player>();
+                _players = new List<Player>();
             }
         }
-        private void Start()
+
+        private void Ready(Player player)
+        {
+
+        }
+
+        private void Action(Player player)
+        {
+
+        }
+
+        private async void Start(Game g)
         {
             if(g.Status == GameState.Filled)
             {
                 g.Status = GameState.Locked;
+                await AlertMessage("alert-info", "Game has started");
             }
             else if(g.Status == GameState.Unfilled)
             {
-                StatusClass = "alert-danger";
-                StatusMessage = "Minimum 4 players needed";
+                await AlertMessage("alert-danger", "Minimum 4 players needed");
             }
         }
 
-        private void Leave()
+        private void Leave(Game g)
         {
-            g.RemovePlayer(Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User)));
+            g.RemovePlayer(_player.Guid);
             NavigationManager.NavigateTo("/");
         }
     }

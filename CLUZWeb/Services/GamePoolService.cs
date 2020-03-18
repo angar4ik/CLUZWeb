@@ -49,7 +49,7 @@ namespace CLUZWeb.Services
         {
             Game newGame = new Game(name, gamePing, adminGuid);
 
-            newGame.AllPlayersReady += (o, e) => AllPlayersReadyService.Act(newGame);
+            newGame.AllPlayersReadyEvent += (o, e) => AllPlayersReadyService.Act(newGame);
 
             Games.Add(newGame.Guid, newGame);
 

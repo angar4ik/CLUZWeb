@@ -1,48 +1,57 @@
 ﻿@page "/gameroom/{Guid:guid}"
+@inherits Base
 
-<h3>Game: @g.Name</h3>
+<h3>Game: @_game.Name</h3>
 
-<table class="table">
-    <tbody>
-        <tr>Status: @g.Status</tr>
-        <tr>TimeDay: @g.TimeOfDay</tr>
-        <tr>TimeFrame: @g.TimeFrame</tr>
-        <tr>Players: @g.Players.Count</tr>
-    </tbody>
-</table>
+<p>
+    <span class="badge badge-pill badge-primary">@_game.Status</span>
+    <span class="badge badge-pill badge-primary">@_game.TimeOfDay</span>
+    <span class="badge badge-pill badge-primary">T: @_game.TimeFrame</span>
+    <span class="badge badge-pill badge-primary">P: @_game.Players.Count</span>
+</p>
 
-@if (players.Count() == 0)
+@if (_players.Count() == 0)
 {
     <p><em>Nothing to display...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>State</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var player in players)
-            {
-                <tr>
-                    <td>@player.Name</td>
-                    <td>@player.State</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    @if (g.AdminGuid == Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User)))
+    <ul class="list-group">
+        @foreach (var p in _players)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <h4>@p.Name</h4>
+                <div>
+                    @if (_game.AdminGuid == p.Guid)
+                    {
+                        <span class="badge badge-pill badge-primary">Admin</span>
+                    }
+                    <span class="badge badge-pill badge-primary">@p.State</span>
+                    <span class="badge badge-pill badge-primary">@p.Role</span>
+                    <span class="badge badge-primary badge-pill">@p.VoteCount</span>
+                    <button type="button" class="btn btn-info disabled" @onclick="() => Action(p)">Action</button>
+                </div>
+            </li>
+        }
+    </ul>
+
+    <div class="alert @StatusClass">@StatusMessage</div>
+
+    @if (_game.AdminGuid == _player.Guid)
     {
-        <div class="alert @StatusClass">@StatusMessage</div>
-        <button class="btn btn-primary" @onclick="s => Start()">
+        <button class="btn btn-primary" @onclick="() => Start(_game)">
             Start
         </button>
     }
 
-    <button class="btn btn-primary float-right" @onclick="s => Leave()">
+    @if (_game.Status == Models.GameState.Locked)
+    {
+        <button class="btn btn-primary" @onclick="() => Ready(_player)">
+            Ready
+        </button>
+    }
+
+    <button class="btn btn-danger float-right" @onclick="() => Leave(_game)">
         Leave
     </button>
 }
