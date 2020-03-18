@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace CLUZWeb.Pages
 {
@@ -27,12 +26,13 @@ namespace CLUZWeb.Pages
             catch (KeyNotFoundException)
             {
                 _players = new List<Player>();
+                _game = new Game("", "", Guid.NewGuid());
             }
         }
 
         private void Ready(Player player)
         {
-
+            player.State = PlayerState.Ready;
         }
 
         private void Action(Player player)

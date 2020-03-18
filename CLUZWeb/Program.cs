@@ -22,6 +22,14 @@ namespace CLUZWeb
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    //webBuilder.ConfigureKestrel(serverOptions =>
+                    //        {
+                    //            serverOptions.Listen(System.Net.IPAddress.Any, 8000, listenOptions =>
+                    //            {
+                    //                //listenOptions.UseHttps("pfx.pfx", "password");
+                    //                listenOptions.UseConnectionLogging();
+                    //            });
+                    //        });
                     webBuilder.UseStartup<Startup>();
                 });
     }

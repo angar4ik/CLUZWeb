@@ -31,7 +31,6 @@ namespace CLUZWeb.Models
 
         #region Fields
         private GameState _status = GameState.Unfilled;
-        private int _minimumPlayersCount = 4;
         private int _timeFrame = 0;
         #endregion
 
@@ -54,7 +53,7 @@ namespace CLUZWeb.Models
                 }
             }
         }
-        public int MinimumPlayerCount { get; set; }
+        public int MinimumPlayerCount { get; set; } = 2;
         public IDictionary<Guid, Player> Players { get; set; } = new Dictionary<Guid, Player>();
         public string Name { get; }
         public string GamePin { get; }
@@ -154,7 +153,7 @@ namespace CLUZWeb.Models
         }
         private void CheckGameFulfillment()
         {
-            if (Players.Count >= _minimumPlayersCount)
+            if (Players.Count >= MinimumPlayerCount)
             {
                 Status = GameState.Filled;
             }

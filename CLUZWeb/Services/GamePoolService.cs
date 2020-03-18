@@ -20,7 +20,7 @@ namespace CLUZWeb.Services
 
         [Inject] AllPlayersReadyService AllPlayersReadyService { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler GameAddedEvent;
 
         public IDictionary<Guid, Game> Games { get; set; } = new Dictionary<Guid, Game>();
 
@@ -34,9 +34,7 @@ namespace CLUZWeb.Services
             foreach(Game g in Games.Values)
             {
                 if (g.PlayerInGame(guid))
-                    g.RemovePlayer(guid);
-
-                
+                    g.RemovePlayer(guid);               
             }
         }
 
@@ -55,7 +53,7 @@ namespace CLUZWeb.Services
 
             //Log.Information("GamePool: New game added to game pool '{0}'", newGame.Name);
 
-            PropertyChanged?.Invoke(this,
+            GameAddedEvent?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Game)));
 
             return newGame.Guid;

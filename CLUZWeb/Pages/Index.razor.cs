@@ -16,7 +16,7 @@ namespace CLUZWeb.Pages
             {
                 games = GamePool.Games.Values;
 
-                GamePool.PropertyChanged += async (o, e) => await InvokeAsync(() => StateHasChanged());
+                GamePool.GameAddedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
             catch (KeyNotFoundException)
             {
