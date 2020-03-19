@@ -1,27 +1,31 @@
 ﻿@page "/create"
 @inherits Base
 
-<h2>Create</h2>
+    <div class="fixed-top">
+        <div class="alert @StatusClass">@StatusMessage</div>
+    </div>
 
-<EditForm autocomplete="off" Model="@_createGameModel" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="content px-2">
-                <InputText class="form-control" placeholder="Name" @bind-Value="@_createGameModel.Name" />
-                <small class="form-text text-muted">Game name</small>
-            </div>
-            <div class="content px-2">
-                <InputText class="form-control" placeholder="Password" @bind-Value="@_createGameModel.Password" />
-                <small class="form-text text-muted">Game pin</small>
-            </div>
-            <div class="alert @StatusClass">@StatusMessage</div>
-            <div class="content px-2">
-                <button class="btn btn-primary" type="submit">Create</button>
+    <h2>Create</h2>
+
+    <EditForm autocomplete="off" Model="@_createGameModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="content px-2">
+                    <InputText class="form-control" placeholder="Name" @bind-Value="@_createGameModel.Name" />
+                    <small class="form-text text-muted">Game name</small>
+                </div>
+                <div class="content px-2">
+                    <InputText class="form-control" placeholder="Password" @bind-Value="@_createGameModel.Password" />
+                    <small class="form-text text-muted">Game pin</small>
+                </div>
+                    
+                <div class="content px-2">
+                    <button class="btn btn-primary" type="submit">Create</button>
+                </div>
             </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
 
 

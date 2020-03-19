@@ -1,6 +1,10 @@
 ﻿@page "/gameroom/{Guid:guid}"
 @inherits Base
 
+    <div class="fixed-top">
+        <div class="alert @StatusClass">@StatusMessage</div>
+    </div>
+
 @if (_game != null && _player != null)
 {
     <h4>Game: @_game.Name</h4>
@@ -51,7 +55,6 @@ else
         }
     </ul>
 
-    <div class="alert @StatusClass">@StatusMessage</div>
 
     @if (_game.AdminGuid == _player.Guid && !(_game.Status == Models.GameState.Locked))
     {

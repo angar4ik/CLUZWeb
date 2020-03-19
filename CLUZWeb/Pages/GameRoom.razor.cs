@@ -15,7 +15,6 @@ namespace CLUZWeb.Pages
         private IEnumerable<Player> _players;
         private Game _game;
         private Player _player;
-
         protected override void OnInitialized()
         {
             if (GamePool.Games.TryGetValue(Guid, out _game) &&
@@ -37,17 +36,10 @@ namespace CLUZWeb.Pages
                 _players = new List<Player>();
             }
         }
-        protected override void OnAfterRender(bool firstRender)
-        {
-            base.OnAfterRender(firstRender);
-            
-        }
-
-    private void Ready(Player p)
+        private void Ready(Player p)
         {
             p.State = PlayerState.Ready;
         }
-
         private async void Action(Player p)
         {
             //_player doing something with p
@@ -70,7 +62,6 @@ namespace CLUZWeb.Pages
                     await AlertMessage("alert-info", $"{p.Name} NOT a mafia!");
             }
         }
-
         private async void Start(Game g)
         {
             if(g.Status == GameState.Filled)
@@ -83,13 +74,11 @@ namespace CLUZWeb.Pages
                 await AlertMessage("alert-danger", "Minimum 4 players needed");
             }
         }
-
         private void Leave(Game g)
         {
             g.RemovePlayer(_player.Guid);
             NavigationManager.NavigateTo("/");
         }
-
         private bool IsDisabledReadyBtn()
         {
             if (_player.State == PlayerState.Idle
@@ -100,7 +89,6 @@ namespace CLUZWeb.Pages
             else
                 return true;
         }
-
         private bool IsDisabledActionBtn(Player p)
         {
             if (p.Role == PlayerRole.Ghost || p.Role == PlayerRole.Kicked)
@@ -117,7 +105,6 @@ namespace CLUZWeb.Pages
                 return true;
 
         }
-
         private GameAction GetActionBtnType()
         {
             if (_game.IsGameVoting == true)
