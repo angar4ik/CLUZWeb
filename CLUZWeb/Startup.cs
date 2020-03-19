@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CLUZWeb.Areas.Identity;
 using CLUZWeb.Data;
-using CLUZWeb.Helpers;
 using CLUZWeb.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace CLUZWeb
 {
@@ -40,6 +40,16 @@ namespace CLUZWeb
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddAuthentication().AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = "636140980557785";
+                facebookOptions.AppSecret = "ea41eaf1c629d9561d041e882b3823f1";
+            });
+            // requires
+            // using Microsoft.AspNetCore.Identity.UI.Services;
+            // using WebPWrecover.Services;
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
             ////change policies for password
             services.Configure<IdentityOptions>(options =>
             {
