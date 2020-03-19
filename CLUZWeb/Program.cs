@@ -29,7 +29,7 @@ namespace CLUZWeb
                 {
                     webBuilder.ConfigureKestrel(serverOptions =>
                             {
-                                serverOptions.Listen(System.Net.IPAddress.Any, 8000, listenOptions =>
+                                serverOptions.Listen(System.Net.IPAddress.Any, 443, listenOptions =>
                                 {
                                     listenOptions.UseHttps("pfx.pfx", "password");
                                     listenOptions.UseConnectionLogging();

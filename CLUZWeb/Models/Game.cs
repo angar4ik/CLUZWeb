@@ -44,7 +44,6 @@ namespace CLUZWeb.Models
         #region Fields
         private GameState _status = GameState.Unfilled;
         private int _timeFrame = 0;
-        private bool _isGameEnded = false;
         #endregion
 
         #region Props
