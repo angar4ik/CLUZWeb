@@ -18,9 +18,9 @@ namespace CLUZWeb.Pages
 
                 GamePool.GameAddedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
-            catch (KeyNotFoundException)
+            catch
             {
-                new List<Game>();
+                games = new List<Game>();
             }
         }
 

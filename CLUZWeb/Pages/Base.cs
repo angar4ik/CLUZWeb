@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace CLUZWeb.Pages
 {
@@ -13,6 +14,7 @@ namespace CLUZWeb.Pages
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] public UserManager<IdentityUser> UserManager { get; set; }
+        //[Inject] public ILogger Logger { get; set; }
 
         public string StatusMessage;
         public string StatusClass;

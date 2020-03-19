@@ -18,17 +18,9 @@ namespace CLUZWeb.Pages
 
         protected override void OnInitialized()
         {
-            try
-            {
                 _game = GamePool.Games[Guid];
                 _players = _game.Players.Values;
                 _player = _game.Players[GetCurrentUserGuid()];
-            }
-            catch (KeyNotFoundException)
-            {
-                _players = new List<Player>();
-                _game = new Game("", "", Guid.NewGuid());
-            }
         }
         protected override void OnAfterRender(bool firstRender)
         {

@@ -2,6 +2,7 @@
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace CLUZWeb.Pages
 {
@@ -17,6 +18,7 @@ namespace CLUZWeb.Pages
             else
             {
                 GamePool.AddGame(_createGameModel.Name, _createGameModel.Password, GetCurrentUserGuid());
+                //Logger.LogInformation($"{_createGameModel.Name} game added");
                 NavigationManager.NavigateTo("/");
             }
         }
