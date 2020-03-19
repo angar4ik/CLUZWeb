@@ -18,15 +18,11 @@ namespace CLUZWeb.Pages
 
         protected override void OnInitialized()
         {
-                _game = GamePool.Games[Guid];
-                _players = _game.Players.Values;
-                _player = _game.Players[GetCurrentUserGuid()];
-        }
-        protected override void OnAfterRender(bool firstRender)
-        {
-            base.OnAfterRender(firstRender);
-            if (firstRender)
+            if (GamePool.Games.TryGetValue(Guid, out _game) &&
+                _game.Players.TryGetValue(GetCurrentUserGuid(), out _player))
             {
+                _players = _game.Players.Values;
+
                 _game.GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
                 _game.PlayerPropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
                 _game.GameEndedEvent += (o, e) =>
@@ -36,9 +32,18 @@ namespace CLUZWeb.Pages
                     NavigationManager.NavigateTo($"/winner/{winner.Winner}");
                 };
             }
+            else
+            {
+                _players = new List<Player>();
+            }
+        }
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            
         }
 
-        private void Ready(Player p)
+    private void Ready(Player p)
         {
             p.State = PlayerState.Ready;
         }

@@ -1,20 +1,26 @@
 ﻿@page "/gameroom/{Guid:guid}"
 @inherits Base
 
-<h4>Game: @_game.Name</h4>
-<p>
-    <h5>
-        Player: @_player.Name
-    </h5>
-</p>
+@if (_game != null && _player != null)
+{
+    <h4>Game: @_game.Name</h4>
+    <p>
+        <h5>
+            Player: @_player.Name
+        </h5>
+    </p>
+    <p>
+        <span class="badge badge-pill badge-primary">@_game.Status</span>
+        <span class="badge badge-pill badge-primary">@_game.TimeOfDay</span>
+        <span class="badge badge-pill badge-primary">T: @_game.TimeFrame</span>
+        <span class="badge badge-pill badge-primary">P: @_game.Players.Count</span>
+    </p>
+}
+else
+{
+    <h4>Game doesn't exist</h4>
+}
 
-
-<p>
-    <span class="badge badge-pill badge-primary">@_game.Status</span>
-    <span class="badge badge-pill badge-primary">@_game.TimeOfDay</span>
-    <span class="badge badge-pill badge-primary">T: @_game.TimeFrame</span>
-    <span class="badge badge-pill badge-primary">P: @_game.Players.Count</span>
-</p>
 
 @if (_players.Count() == 0)
 {
