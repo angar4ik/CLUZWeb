@@ -10,6 +10,8 @@ using CLUZWeb.Areas.Identity;
 using CLUZWeb.Data;
 using CLUZWeb.Helpers;
 using CLUZWeb.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace CLUZWeb
 {
@@ -26,7 +28,13 @@ namespace CLUZWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.Configure<KestrelServerOptions>(
+                Configuration.GetSection("Kestrel"));
+            services.AddHttpsRedirection(options =>
+                {
+                    options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                    options.HttpsPort = 443;
+                });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
