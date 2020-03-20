@@ -1,9 +1,12 @@
 ﻿@page "/join/{Guid:guid}"
 @inherits Base
 
-<div class="fixed-top">
-    <div class="alert @StatusClass">@StatusMessage</div>
-</div>
+@if (StatusMessage != null)
+{
+    <div class="fixed-top">
+        <div class="alert @StatusClass">@StatusMessage</div>
+    </div>
+}
 
 <h2>Join</h2>
 
@@ -17,7 +20,7 @@
                 <InputText class="form-control" placeholder="Password" @bind-Value="@_joinGameModel.Password" />
                 <small class="form-text text-muted">Game pin</small>
             </div>
-            <div class="content px-2">
+            <div class="content p-4">
                 <button class="btn btn-primary" type="submit">Join</button>
             </div>
         </div>

@@ -17,7 +17,7 @@ namespace CLUZWeb.Pages
             }
             else
             {
-                GamePool.AddGame(_createGameModel.Name, _createGameModel.Password, GetCurrentUserGuid());
+                GamePool.Add(_createGameModel.Name, _createGameModel.Password, GetCurrentUserGuid());
                 //Logger.LogInformation($"{_createGameModel.Name} game added");
                 NavigationManager.NavigateTo("/");
             }

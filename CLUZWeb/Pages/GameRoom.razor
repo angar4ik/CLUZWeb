@@ -1,9 +1,12 @@
 ﻿@page "/gameroom/{Guid:guid}"
 @inherits Base
 
+@if (StatusMessage != null)
+{
     <div class="fixed-top">
         <div class="alert @StatusClass">@StatusMessage</div>
     </div>
+}
 
 @if (_game != null && _player != null)
 {
@@ -55,23 +58,23 @@ else
         }
     </ul>
 
-<div class="p-4">
-    @if (_game.AdminGuid == _player.Guid && !(_game.Status == Models.GameState.Locked))
-    {
-        <button class="btn btn-primary" @onclick="() => Start(_game)">
-            Start
-        </button>
-    }
+    <div class="p-4">
+        @if (_game.AdminGuid == _player.Guid && !(_game.Status == Models.GameState.Locked))
+        {
+            <button class="btn btn-primary" @onclick="() => Start(_game)">
+                Start
+            </button>
+        }
 
-    @if (_game.Status == Models.GameState.Locked)
-    {
-        <button class="btn btn-primary" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
-            Ready
-        </button>
-    }
+        @if (_game.Status == Models.GameState.Locked)
+        {
+            <button class="btn btn-primary" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
+                Ready
+            </button>
+        }
 
-    <button class="btn btn-danger float-right disabled" @onclick="() => Leave(_game)">
-        Leave
-    </button>
-</div>
+        <button class="btn btn-danger float-right disabled" @onclick="() => Leave(_game)">
+            Leave
+        </button>
+    </div>
 }

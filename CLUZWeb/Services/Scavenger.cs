@@ -1,46 +1,48 @@
-﻿//using CLUZWeb.Models;
-//using Microsoft.Extensions.Hosting;
-//using System;
-//using System.Linq;
-//using System.Threading;
-//using System.Threading.Tasks;
+﻿using CLUZWeb.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-//namespace CLUZWeb.Services
-//{
-//    public class Scavenger : BackgroundService
-//    {
-//        //private readonly IHubContext<PlayersHub> _hubContext;
-//        private GamePoolService _gamePool;
+namespace CLUZWeb.Services
+{
+    public class Scavenger : BackgroundService
+    {
+        private GamePoolService _gamePool;
+        Guid gameToRemove = Guid.Empty;
 
-//        public Scavenger(/*IHubContext<PlayersHub> hubContext, */GamePoolService gamePool)
-//        {
-//            _gamePool = gamePool;
-//            //_hubContext = hubContext;
-//        }
+        public Scavenger(GamePoolService gamePoolService)
+        {
+            _gamePool = gamePoolService;
+        }
 
-//        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-//        {
-//            while (!stoppingToken.IsCancellationRequested)
-//            {
-//                Guid gameToRemove = Guid.Empty;
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                if (_gamePool.Games.Values.Count() > 0)
+                {
+                    foreach (KeyValuePair<Guid, Game> entry in _gamePool.Games)
+                    {
+                        if ((DateTime.UtcNow - entry.Value.ChangeTimeSpamp).TotalMinutes > 30 || entry.Value.IsGameEnded == true)
+                        {
+                            gameToRemove = entry.Value.Guid;
+                        }
+                    }
 
-//                foreach (Game g in _gamePool.Games.Values.ToList())
-//                {
-//                    if ((DateTime.UtcNow - g.ChangeTimeSpamp).TotalHours > 1 || g.IsGameEnded == true)
-//                    {
-//                        gameToRemove = g.Guid;
-//                       //Log.Information("Removing game {name} from pool", g.Name);
-//                    }
-//                }
+                    if(gameToRemove != Guid.Empty)
+                    {
+                        _gamePool.Remove(gameToRemove);
+                        gameToRemove = Guid.Empty;
+                    }                    
+                }
 
-//                if (gameToRemove != Guid.Empty)
-//                {
-//                    _gamePool.Games.Remove(gameToRemove);
-//                    //await _hubContext.Clients.All.SendAsync("RefreshGameList");
-//                }
-
-//                await Task.Delay(60000);
-//            }
-//        }
-//    }
-//}
+                await Task.Delay(60000);
+            }
+        }
+    }
+}

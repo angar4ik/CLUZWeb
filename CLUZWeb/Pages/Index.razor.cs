@@ -16,7 +16,7 @@ namespace CLUZWeb.Pages
             {
                 games = GamePool.Games.Values;
 
-                GamePool.GameAddedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
+                GamePool.GamePoolEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
             catch
             {
