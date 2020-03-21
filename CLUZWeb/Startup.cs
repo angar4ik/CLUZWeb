@@ -46,6 +46,14 @@ namespace CLUZWeb
                 facebookOptions.AppId = "636140980557785";
                 facebookOptions.AppSecret = "ea41eaf1c629d9561d041e882b3823f1";
             });
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthNSection =
+                    Configuration.GetSection("Authentication:Google");
+
+                options.ClientId = "515496798286-s5pofb2ls0g1jllr80u1rnmcdkres2ia.apps.googleusercontent.com";
+                options.ClientSecret = "sZPYEG-PrvJRZetBBWHubgLg";
+            });
             services.AddToaster(config =>
             {
                 //example customizations
