@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 
 namespace CLUZWeb.Pages
 {
@@ -24,7 +25,7 @@ namespace CLUZWeb.Pages
             }
         }
 
-        private void Create()
+        private async void Create()
         {
             NavigationManager.NavigateTo("/create");
         }

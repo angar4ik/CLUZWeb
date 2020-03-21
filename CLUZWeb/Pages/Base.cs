@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace CLUZWeb.Pages
 {
@@ -16,6 +15,7 @@ namespace CLUZWeb.Pages
         [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] public UserManager<IdentityUser> UserManager { get; set; }
         [Inject] public ToastQueueService ToastService { get; set; }
+        [Inject] protected Sotsera.Blazor.Toaster.IToaster Toaster { get; set; }
         //[Inject] public ILogger Logger { get; set; }
 
         public string StatusMessage;

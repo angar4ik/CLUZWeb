@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CLUZWeb.Events;
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace CLUZWeb.Pages
 {
@@ -30,11 +31,10 @@ namespace CLUZWeb.Pages
                     GamePool.Games.Remove(_game.Guid);
                     NavigationManager.NavigateTo($"/winner/{winner.Winner}");
                 };
-                _game.GameEvent += async (o, e) =>
+                _game.GameEvent += (o, e) =>
                 {
                     GameEventArgs message = e as GameEventArgs;
-                    ToastService.AddToast(message.EventHeader, message.EventBody, message.TimeSpan);
-                    await InvokeAsync(() => StateHasChanged());
+                    Toaster.Info(message.EventBody, message.EventHeader);
                 };
 
                 ToastService.ToastServiceEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());

@@ -12,7 +12,7 @@ using CLUZWeb.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using CLUZWeb.Models;
+using Sotsera.Blazor.Toaster.Core.Models;
 
 namespace CLUZWeb
 {
@@ -46,9 +46,18 @@ namespace CLUZWeb
                 facebookOptions.AppId = "636140980557785";
                 facebookOptions.AppSecret = "ea41eaf1c629d9561d041e882b3823f1";
             });
-            // requires
-            // using Microsoft.AspNetCore.Identity.UI.Services;
-            // using WebPWrecover.Services;
+            services.AddToaster(config =>
+            {
+                //example customizations
+                config.PositionClass = Defaults.Classes.Position.TopRight;
+                config.PreventDuplicates = false;
+                config.NewestOnTop = false;
+                config.HideTransitionDuration = 250;
+                config.ShowTransitionDuration = 250;
+                config.VisibleStateDuration = 3000;
+                config.ShowCloseIcon = false;
+            });
+
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             ////change policies for password
