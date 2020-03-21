@@ -14,21 +14,8 @@ namespace CLUZWeb.Pages
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] public UserManager<IdentityUser> UserManager { get; set; }
-        [Inject] public ToastQueueService ToastService { get; set; }
         [Inject] protected Sotsera.Blazor.Toaster.IToaster Toaster { get; set; }
         //[Inject] public ILogger Logger { get; set; }
-
-        public string StatusMessage;
-        public string StatusClass;
-        public async Task AlertMessage(string alertClass, string alertMesage)
-        {
-            StatusClass = alertClass;
-            StatusMessage = alertMesage;
-            await Task.Delay(3000);
-            StatusClass = null;
-            StatusMessage = null;
-            StateHasChanged();
-        }
 
         public Guid GetCurrentUserGuid()
         {

@@ -35,7 +35,7 @@ namespace CLUZWeb.Pages
             }
             else
             {
-                await AlertMessage("alert-danger", "Password wrong or game is locked");
+                Toaster.Error("Password wrong or game is locked");
             }
 
             static string ComputeSha256Hash(string rawData)

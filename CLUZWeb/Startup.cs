@@ -76,7 +76,6 @@ namespace CLUZWeb
 
             services.AddSingleton<GamePoolService>();
             services.AddHostedService<Scavenger>();
-            services.AddSingleton<ToastQueueService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

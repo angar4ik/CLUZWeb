@@ -1,13 +1,6 @@
 ﻿@page "/join/{Guid:guid}"
 @inherits Base
 
-@if (StatusMessage != null)
-{
-    <div class="fixed-top">
-        <div class="alert @StatusClass">@StatusMessage</div>
-    </div>
-}
-
 <h2>Join</h2>
 
 <EditForm autocomplete="off" Model="@_joinGameModel" OnValidSubmit="HandleValidSubmit">

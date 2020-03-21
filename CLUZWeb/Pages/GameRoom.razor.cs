@@ -36,8 +36,6 @@ namespace CLUZWeb.Pages
                     GameEventArgs message = e as GameEventArgs;
                     Toaster.Info(message.EventBody, message.EventHeader);
                 };
-
-                ToastService.ToastServiceEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
             else
             {
@@ -65,9 +63,9 @@ namespace CLUZWeb.Pages
             {
                 _player.State = PlayerState.Ready;
                 if (p.Role == PlayerRole.Mafia)
-                    await AlertMessage("alert-info", $"{p.Name} is mafia!");
+                    Toaster.Success($"{p.Name} is mafia!");
                 else
-                    await AlertMessage("alert-info", $"{p.Name} NOT a mafia!");
+                    Toaster.Warning($"{p.Name} NOT a mafia!");
             }
         }
         private async void Start(Game g)
@@ -75,11 +73,11 @@ namespace CLUZWeb.Pages
             if(g.Status == GameState.Filled)
             {
                 g.Status = GameState.Locked;
-                await AlertMessage("alert-info", "Game has started");
+                Toaster.Info("Game has started");
             }
             else if(g.Status == GameState.Unfilled)
             {
-                await AlertMessage("alert-danger", "Minimum 4 players needed");
+                Toaster.Error("Minimum 4 players needed");
             }
         }
         private void Leave(Game g)
