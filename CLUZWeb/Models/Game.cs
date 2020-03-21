@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using CLUZWeb.Pages;
+using System.Threading.Tasks;
 
 namespace CLUZWeb.Models
 {
@@ -345,6 +346,7 @@ namespace CLUZWeb.Models
             else if (TimeFrame >= 1 && Status == GameState.Locked && !IsGameEnded)
             {
                 #region Regular Iteration
+                Task.Delay(2000);
                 TimeFrame += 1;
                 //Log.Information("GamePool: Iterating timeframe for '{game}'. Now is '{time}'", Name, g.TimeFrame);
                 //set IsGameVoting flag

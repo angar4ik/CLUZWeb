@@ -32,21 +32,21 @@ namespace CLUZWeb.Pages
         {
             return AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
         }
-        public void ShowInfo(string header, string body, InfoType type)
+        public void ShowInfo(string title, string body, InfoType type)
         {
             switch (type)
             {
                 case InfoType.Success:
-                    Toaster.Success(body, header);
+                    Toaster.Success(body, title);
                     break;
                 case InfoType.Info:
-                    Toaster.Info(body, header);
+                    Toaster.Info(body, title);
                     break;
                 case InfoType.Warn:
-                    Toaster.Warning(body, header);
+                    Toaster.Warning(body, title);
                     break;
                 case InfoType.Error:
-                    Toaster.Error(body, header);
+                    Toaster.Error(body, title);
                     break;
             }
                 

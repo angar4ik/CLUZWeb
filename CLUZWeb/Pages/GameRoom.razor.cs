@@ -34,7 +34,7 @@ namespace CLUZWeb.Pages
                 _game.GameEvent += (o, e) =>
                 {
                     GameEventArgs message = e as GameEventArgs;
-                    ShowInfo(message.EventBody, message.EventHeader, message.InfoType);
+                    ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
                 };
             }
             else

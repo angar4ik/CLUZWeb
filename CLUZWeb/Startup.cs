@@ -54,7 +54,7 @@ namespace CLUZWeb
                 config.NewestOnTop = false;
                 config.HideTransitionDuration = 250;
                 config.ShowTransitionDuration = 250;
-                config.VisibleStateDuration = 3000;
+                config.VisibleStateDuration = 5000;
                 config.ShowCloseIcon = false;
             });
 
