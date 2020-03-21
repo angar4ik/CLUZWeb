@@ -13,7 +13,7 @@ namespace CLUZWeb.Pages
         {
             if (GamePool.GameExists(_createGameModel.Name))
             {
-                Toaster.Error("Game exists");
+                ShowInfo("Game", "Game exists", InfoType.Error);
             }
             else
             {

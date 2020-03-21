@@ -34,7 +34,7 @@ namespace CLUZWeb.Pages
                 _game.GameEvent += (o, e) =>
                 {
                     GameEventArgs message = e as GameEventArgs;
-                    Toaster.Info(message.EventBody, message.EventHeader);
+                    ShowInfo(message.EventBody, message.EventHeader, message.InfoType);
                 };
             }
             else
@@ -63,9 +63,9 @@ namespace CLUZWeb.Pages
             {
                 _player.State = PlayerState.Ready;
                 if (p.Role == PlayerRole.Mafia)
-                    Toaster.Success($"{p.Name} is mafia!");
+                    ShowInfo("Game","${p.Name} is mafia!", InfoType.Success);
                 else
-                    Toaster.Warning($"{p.Name} NOT a mafia!");
+                    ShowInfo("Game", $"{p.Name} NOT a mafia!", InfoType.Warn);
             }
         }
         private async void Start(Game g)
@@ -73,11 +73,11 @@ namespace CLUZWeb.Pages
             if(g.Status == GameState.Filled)
             {
                 g.Status = GameState.Locked;
-                Toaster.Info("Game has started");
+                ShowInfo("Game", "Game has started", InfoType.Info);
             }
             else if(g.Status == GameState.Unfilled)
             {
-                Toaster.Error("Minimum 4 players needed");
+                ShowInfo("Game", "Minimum 4 players needed", InfoType.Error);
             }
         }
         private void Leave(Game g)

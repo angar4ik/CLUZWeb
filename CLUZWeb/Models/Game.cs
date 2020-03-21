@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using CLUZWeb.Pages;
 
 namespace CLUZWeb.Models
 {
@@ -100,10 +101,19 @@ namespace CLUZWeb.Models
                         IsGameEnd();
 
                     if (value % 2 == 0)
+                    {
                         TimeOfDay = TimeOfDay.Day;
-                    else { TimeOfDay = TimeOfDay.Night; }
+                        OnGameEvent(new GameEventArgs("Game", $"Day", InfoType.Info));
+                    }
+                        
+                    else
+                    {
+                        TimeOfDay = TimeOfDay.Night;
+                        OnGameEvent(new GameEventArgs("Game", $"Night", InfoType.Info));
+                    }
 
                     _timeFrame = value;
+
                     GamePropertyChanged(nameof(TimeFrame));
                 }
             }
@@ -159,7 +169,7 @@ namespace CLUZWeb.Models
 
                 GamePropertyChanged(nameof(Players));
 
-                OnGameEvent(new GameEventArgs("Player", $"Player '{player.Name}' added", 5));
+                OnGameEvent(new GameEventArgs("Player", $"Player '{player.Name}' added", InfoType.Info));
 
                 //Log.Information("Game: Player '{0}' added to the game '{1}'", player.Name, this.Name);
             }
@@ -365,7 +375,7 @@ namespace CLUZWeb.Models
                         && IsPlayerActive(p) == true)
                     {
                         p.AllowedToVote = true;
-
+                        OnGameEvent(new GameEventArgs("Vote", $"{p.Name} is voting", InfoType.Info));
                         //await hubContext.Clients.All.SendAsync("SnackbarMessage", $"'{p.Name}' is voting", 3, Guid);
 
                         break;
@@ -393,7 +403,11 @@ namespace CLUZWeb.Models
             //Log.Information("Request from '{0}' to kick '{1}'", _playerPool.Players[fromGuid].Name, _playerPool.Players[kickGuid].Name);
 
             if (targetPlayer.Role != PlayerRole.Kicked || targetPlayer.Role != PlayerRole.Ghost)
+            {
                 targetPlayer.VoteCount += 1;
+                OnGameEvent(new GameEventArgs("Vote", $"{sourcePlayer.Name} voted to kick {targetPlayer.Name}", InfoType.Info));
+            }
+
             else
                 Console.WriteLine("!!! Trying to vote for inactive player");
 
