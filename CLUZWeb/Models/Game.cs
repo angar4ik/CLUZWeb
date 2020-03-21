@@ -1,10 +1,14 @@
 ﻿using CLUZWeb.Events;
+using CLUZWeb.Services;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace CLUZWeb.Models
 {
     public enum GameState
@@ -34,10 +38,17 @@ namespace CLUZWeb.Models
         public event PropertyChangedEventHandler GamePropertyChangedEvent;
         public event PropertyChangedEventHandler PlayerPropertyChangedEvent;
         public event EventHandler GameEndedEvent;
+        public event EventHandler GameEvent;
 
         protected virtual void OnGameEndedEvent(GameEndedEventArgs e)
         {
             EventHandler handler = GameEndedEvent;
+            handler?.Invoke(this, e);
+        }
+
+        protected virtual void OnGameEvent(GameEventArgs e)
+        {
+            EventHandler handler = GameEvent;
             handler?.Invoke(this, e);
         }
 
@@ -68,10 +79,10 @@ namespace CLUZWeb.Models
         }
         public int MinimumPlayerCount { get; set; } = 4;
         public IDictionary<Guid, Player> Players { get; set; } = new Dictionary<Guid, Player>();
-        public string Name { get; }
-        public string GamePin { get; }
-        public Guid Guid { get; }
-        public Guid AdminGuid { get; }
+        public string Name { get; set; }
+        public string GamePin { get; set; }
+        public Guid Guid { get; set; }
+        public Guid AdminGuid { get; set; }
         public TimeOfDay TimeOfDay { get; set; }
         public bool IsGameVoting { get; set; }
         public int TimeFrame
@@ -99,13 +110,14 @@ namespace CLUZWeb.Models
         }
         #endregion
 
-        public Game(string name, string gamePin, Guid adminGuid)
+        public Game(string name, string gamePin, Guid guid, Guid adminGuid)
         {
-            Guid = Guid.NewGuid();
+            Guid = guid;
             Name = name;
             GamePin = ComputeSha256Hash(gamePin);
             AdminGuid = adminGuid;
         }
+
         private void PlayerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             ChangeTimeSpamp = DateTime.UtcNow;
@@ -146,6 +158,8 @@ namespace CLUZWeb.Models
                 CheckGameFulfillment();
 
                 GamePropertyChanged(nameof(Players));
+
+                OnGameEvent(new GameEventArgs("Player", $"Player '{player.Name}' added", 5));
 
                 //Log.Information("Game: Player '{0}' added to the game '{1}'", player.Name, this.Name);
             }

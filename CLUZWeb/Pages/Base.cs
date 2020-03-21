@@ -1,5 +1,6 @@
 ﻿using System;
 using CLUZWeb.Services;
+using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ namespace CLUZWeb.Pages
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] public UserManager<IdentityUser> UserManager { get; set; }
+        [Inject] public ToastQueueService ToastService { get; set; }
         //[Inject] public ILogger Logger { get; set; }
 
         public string StatusMessage;

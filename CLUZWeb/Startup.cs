@@ -12,6 +12,7 @@ using CLUZWeb.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using CLUZWeb.Models;
 
 namespace CLUZWeb
 {
@@ -38,7 +39,7 @@ namespace CLUZWeb
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
@@ -65,8 +66,8 @@ namespace CLUZWeb
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
             services.AddSingleton<GamePoolService>();
-
-            //services.AddHostedService<DayIncrementer>();
+            services.AddHostedService<Scavenger>();
+            services.AddSingleton<ToastQueueService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

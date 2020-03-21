@@ -30,6 +30,14 @@ namespace CLUZWeb.Pages
                     GamePool.Games.Remove(_game.Guid);
                     NavigationManager.NavigateTo($"/winner/{winner.Winner}");
                 };
+                _game.GameEvent += async (o, e) =>
+                {
+                    GameEventArgs message = e as GameEventArgs;
+                    ToastService.AddToast(message.EventHeader, message.EventBody, message.TimeSpan);
+                    await InvokeAsync(() => StateHasChanged());
+                };
+
+                ToastService.ToastServiceEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
             }
             else
             {
@@ -91,7 +99,10 @@ namespace CLUZWeb.Pages
         }
         private bool IsDisabledActionBtn(Player p)
         {
-            if (p.Role == PlayerRole.Ghost || p.Role == PlayerRole.Kicked)
+            if (p.Role == PlayerRole.Ghost
+                || p.Role == PlayerRole.Kicked)
+                return true;
+            else if(_player.Guid == p.Guid)
                 return true;
             else if (_game.TimeOfDay == TimeOfDay.Night
                 && (_player.Role == PlayerRole.Mafia || _player.Role == PlayerRole.Police)
