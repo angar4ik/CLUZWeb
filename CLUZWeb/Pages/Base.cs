@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace CLUZWeb.Pages
 {
@@ -30,7 +31,10 @@ namespace CLUZWeb.Pages
         }
         public string GetCurrentUserName()
         {
-            return AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
+            var user = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
+            var name = ((ClaimsIdentity)user.Identity).FindFirst("Name");
+            //return AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
+            return name.Value;
         }
         public void ShowInfo(string title, string body, InfoType type)
         {

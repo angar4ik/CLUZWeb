@@ -68,7 +68,10 @@ namespace CLUZWeb
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
-            ////change policies for password
+
+            services.AddRazorPages();
+            
+            //change policies for password
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -78,7 +81,7 @@ namespace CLUZWeb
                 options.Password.RequiredLength = 3;
                 options.Password.RequiredUniqueChars = 0;
             });
-            services.AddRazorPages();
+
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 

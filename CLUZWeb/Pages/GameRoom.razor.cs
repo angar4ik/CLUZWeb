@@ -46,10 +46,10 @@ namespace CLUZWeb.Pages
         {
             p.State = PlayerState.Ready;
         }
-        private async void Action(Player p)
+        private void Action(Player p)
         {
             //_player doing something with p
-            if(GetActionBtnType() == GameAction.Vote)
+            if (GetActionBtnType() == GameAction.Vote)
             {
                 _game.VoteRequest(_player, p);
                 _player.State = PlayerState.Ready;
@@ -63,19 +63,19 @@ namespace CLUZWeb.Pages
             {
                 _player.State = PlayerState.Ready;
                 if (p.Role == PlayerRole.Mafia)
-                    ShowInfo("Game","${p.Name} is mafia!", InfoType.Success);
+                    ShowInfo("Game", "${p.Name} is mafia!", InfoType.Success);
                 else
                     ShowInfo("Game", $"{p.Name} NOT a mafia!", InfoType.Warn);
             }
         }
-        private async void Start(Game g)
+        private void Start(Game g)
         {
-            if(g.Status == GameState.Filled)
+            if (g.Status == GameState.Filled)
             {
                 g.Status = GameState.Locked;
                 ShowInfo("Game", "Game has started", InfoType.Info);
             }
-            else if(g.Status == GameState.Unfilled)
+            else if (g.Status == GameState.Unfilled)
             {
                 ShowInfo("Game", "Minimum 4 players needed", InfoType.Error);
             }
@@ -100,7 +100,7 @@ namespace CLUZWeb.Pages
             if (p.Role == PlayerRole.Ghost
                 || p.Role == PlayerRole.Kicked)
                 return true;
-            else if(_player.Guid == p.Guid)
+            else if (_player.Guid == p.Guid)
                 return true;
             else if (_game.TimeOfDay == TimeOfDay.Night
                 && (_player.Role == PlayerRole.Mafia || _player.Role == PlayerRole.Police)
