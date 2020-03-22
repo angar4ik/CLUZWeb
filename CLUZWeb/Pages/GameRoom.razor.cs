@@ -73,7 +73,6 @@ namespace CLUZWeb.Pages
             if (g.Status == GameState.Filled)
             {
                 g.Status = GameState.Locked;
-                ShowInfo("Game", "Game has started", InfoType.Info);
             }
             else if (g.Status == GameState.Unfilled)
             {

@@ -75,7 +75,7 @@ namespace CLUZWeb.Models
                 if (value != _status)
                 {
                     _status = value;
-                    GamePropertyChanged(nameof(GameState));
+                    GamePropertyChanged(nameof(Status));
                 }
             }
         }
@@ -154,6 +154,11 @@ namespace CLUZWeb.Models
         private void GamePropertyChanged(string propName)
         {
             ChangeTimeSpamp = DateTime.UtcNow;
+
+            if(propName == "Status")
+            {
+                OnGameEvent(new GameEventArgs("Game", "Game has started", InfoType.Info));
+            }
 
             GamePropertyChangedEvent?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(propName)));
