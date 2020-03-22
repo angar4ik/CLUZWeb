@@ -39,7 +39,7 @@
             //check if player already in the game
             if (!g.PlayerInGame(GetCurrentUserGuid()))
             {
-                Player player = new Player(GetCurrentUserName(), GetCurrentUserGuid());
+                Player player = new Player(GetCurrentUserName(), GetCurrentUserGuid(), GetProfilePicture());
                 g.AddPlayer(player);
                 NavigationManager.NavigateTo($"/gameroom/{g.Guid}");
             }

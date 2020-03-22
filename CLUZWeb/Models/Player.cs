@@ -36,12 +36,8 @@ namespace CLUZWeb.Models
 
         #region Properties
         public Guid Guid { get; }
-
         public string Name { get; }
-
-        [JsonIgnore]
         public bool KillRequest { get; set; }
-
         public int VoteCount
         {
             get
@@ -58,7 +54,6 @@ namespace CLUZWeb.Models
                 }
             }
         }
-
         public PlayerState State
         {
             get
@@ -75,7 +70,6 @@ namespace CLUZWeb.Models
                 }
             }
         }
-
         public PlayerRole Role
         {
 
@@ -93,7 +87,6 @@ namespace CLUZWeb.Models
                 }
             }
         }
-
         public bool AllowedToVote
         {
             get
@@ -110,7 +103,6 @@ namespace CLUZWeb.Models
                 }
             }
         }
-
         public bool HasVoted
         {
             get
@@ -127,11 +119,13 @@ namespace CLUZWeb.Models
                 }
             }
         }
+        public string ProfilePicUrl { get; set; }
         #endregion
-        public Player(string name, Guid guid)
+        public Player(string name, Guid guid, string url)
         {
             Name = name;
             Guid = guid;
+            ProfilePicUrl = url;
         }
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {

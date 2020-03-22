@@ -29,10 +29,12 @@ namespace CLUZWeb.Pages
             return Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User));
         }
 
-        public string GetProfilePicture(ClaimsPrincipal user)
+        public string GetProfilePicture()
         {
             //urn:facebook:id->
             //https://graph.facebook.com/3177970262245867/picture?type=normal
+
+            var user = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
 
             if (user.HasClaim(c => c.Type == "urn:facebook:id"))
             {
