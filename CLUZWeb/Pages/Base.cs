@@ -32,9 +32,13 @@ namespace CLUZWeb.Pages
         public string GetCurrentUserName()
         {
             var user = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
-            var name = ((ClaimsIdentity)user.Identity).FindFirst("Name");
-            //return AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
-            return name.Value;
+
+            Claim? name = ((ClaimsIdentity)user.Identity).FindFirst("Name");
+            
+            if (name != null)
+                return name.Value;
+            else
+                return AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
         }
         public void ShowInfo(string title, string body, InfoType type)
         {
