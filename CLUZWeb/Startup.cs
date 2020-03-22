@@ -45,7 +45,11 @@ namespace CLUZWeb
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<IdentityUser>(options =>
+                { 
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.SignIn.RequireConfirmedEmail = false;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
