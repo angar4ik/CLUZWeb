@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Security.Claims;
 using CLUZWeb.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -27,16 +29,27 @@ namespace CLUZWeb.Pages
             return Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User));
         }
 
-        //public binary[] GetProfilePicture()
-        //{
-        //    if (user.HasClaim(c => c.Type == "urn:google:picture"))
-        //    {
-        //        string googlePicUrl = user.FindFirst("urn:google:picture").Value;
-        //    }
-        //}
+        public string GetProfilePicture(ClaimsPrincipal user)
+        {
+            //urn:facebook:id->
+            //https://graph.facebook.com/3177970262245867/picture?type=normal
 
-        //urn:facebook:id ->
-        //https://graph.facebook.com/3177970262245867/picture?type=normal
+            if (user.HasClaim(c => c.Type == "urn:facebook:id"))
+            {
+                var userId = user.FindFirst("urn:facebook:id").Value;
+                HttpWebRequest HttpWReq = (HttpWebRequest)WebRequest.Create($"https://graph.facebook.com/{userId}/picture?type=normal");
+                HttpWebResponse HttpWResp = (HttpWebResponse)HttpWReq.GetResponse();
+                var imgUri = HttpWResp.ResponseUri.AbsoluteUri;
+                HttpWResp.Close();
+                return imgUri;
+            }
+            else if (user.HasClaim(c => c.Type == "urn:google:picture"))
+            {
+                return user.FindFirst("urn:google:picture").Value;
+            }
+            else
+                return "";
+        }
 
         public string GetCurrentUserName()
         {
