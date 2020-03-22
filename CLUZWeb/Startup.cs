@@ -134,8 +134,13 @@ namespace CLUZWeb
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
-            services.AddRazorPages();
-            
+            services.AddRazorPages()
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AllowAnonymousToPage("/About");
+                    options.Conventions.AllowAnonymousToPage("/Policy");
+                });
+
             //change policies for password
             services.Configure<IdentityOptions>(options =>
             {
