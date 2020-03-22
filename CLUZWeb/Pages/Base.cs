@@ -1,11 +1,8 @@
 ﻿using System;
 using CLUZWeb.Services;
-using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
-using System.Security.Claims;
 
 namespace CLUZWeb.Pages
 {
@@ -29,16 +26,40 @@ namespace CLUZWeb.Pages
         {
             return Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User));
         }
+
+        //public binary[] GetProfilePicture()
+        //{
+        //    if (user.HasClaim(c => c.Type == "urn:google:picture"))
+        //    {
+        //        string googlePicUrl = user.FindFirst("urn:google:picture").Value;
+        //    }
+        //}
+
+        //urn:facebook:id ->
+        //https://graph.facebook.com/3177970262245867/picture?type=normal
+
         public string GetCurrentUserName()
         {
             var user = AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User;
 
-            Claim? name = ((ClaimsIdentity)user.Identity).FindFirst("Name");
-            
-            if (name != null)
-                return name.Value;
+            if (user.HasClaim(c => c.Type == "urn:facebook:name"))
+            {
+                //Console.WriteLine(user.FindFirst("urn:facebook:email").Value);
+                return user.FindFirst("urn:facebook:name").Value;
+            }
+            else if (user.HasClaim(c => c.Type == "urn:google:name"))
+            {
+                //Console.WriteLine(user.FindFirst("urn:google:email").Value);
+                return user.FindFirst("urn:google:name").Value;
+            }
             else
+            {
                 return AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
+            }
+
+            //string? pic = ((ClaimsIdentity)user.Identity).FindFirst("urn:google:picture").Value;
+
+            //Claim? name = ((ClaimsIdentity)user.Identity).FindFirst("Name"); 
         }
         public void ShowInfo(string title, string body, InfoType type)
         {

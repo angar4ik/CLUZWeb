@@ -59,6 +59,26 @@ namespace CLUZWeb
                     facebookOptions.AppId = "636140980557785";
                     facebookOptions.AppSecret = "ea41eaf1c629d9561d041e882b3823f1";
                 }
+
+                facebookOptions.ClaimActions.MapJsonKey("urn:facebook:name", "name", "string");
+                facebookOptions.ClaimActions.MapJsonKey("urn:facebook:id", "id", "string");
+                facebookOptions.ClaimActions.MapJsonKey("urn:facebook:email", "email", "string");
+                facebookOptions.SaveTokens = true;
+
+                facebookOptions.Events.OnCreatingTicket = ctx =>
+                {
+                    List<AuthenticationToken> tokens = ctx.Properties.GetTokens().ToList();
+
+                    tokens.Add(new AuthenticationToken()
+                    {
+                        Name = "TicketCreated",
+                        Value = DateTime.UtcNow.ToString()
+                    });
+
+                    ctx.Properties.StoreTokens(tokens);
+
+                    return Task.CompletedTask;
+                };
             });
             services.AddAuthentication().AddGoogle(options =>
             {
@@ -66,32 +86,34 @@ namespace CLUZWeb
                 {
                     options.ClientId = "1053325521201-kgrjrv5h5ukkpd3dm6ul0gcs6n43l794.apps.googleusercontent.com";
                     options.ClientSecret = "qQsZutXbIZsKug587KV3EfhN";
-                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
-                    options.ClaimActions.MapJsonKey("urn:google:locale", "locale", "string");
-                    options.SaveTokens = true;
-
-                    options.Events.OnCreatingTicket = ctx =>
-                    {
-                        List<AuthenticationToken> tokens = ctx.Properties.GetTokens().ToList();
-
-                        tokens.Add(new AuthenticationToken()
-                        {
-                            Name = "TicketCreated",
-                            Value = DateTime.UtcNow.ToString()
-                        });
-
-                        ctx.Properties.StoreTokens(tokens);
-
-                        return Task.CompletedTask;
-                    };
-
-                    options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
                 }
                 else
                 {
                     options.ClientId = "515496798286-s5pofb2ls0g1jllr80u1rnmcdkres2ia.apps.googleusercontent.com";
                     options.ClientSecret = "sZPYEG-PrvJRZetBBWHubgLg";
                 }
+
+                options.ClaimActions.MapJsonKey("urn:google:name", "name", "string");
+                options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                options.ClaimActions.MapJsonKey("urn:google:email", "email", "string");
+                options.SaveTokens = true;
+
+                options.Events.OnCreatingTicket = ctx =>
+                {
+                    List<AuthenticationToken> tokens = ctx.Properties.GetTokens().ToList();
+
+                    tokens.Add(new AuthenticationToken()
+                    {
+                        Name = "TicketCreated",
+                        Value = DateTime.UtcNow.ToString()
+                    });
+
+                    ctx.Properties.StoreTokens(tokens);
+
+                    return Task.CompletedTask;
+                };
+
+                //options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
             });
             services.AddToaster(config =>
             {

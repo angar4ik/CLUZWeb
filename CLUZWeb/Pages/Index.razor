@@ -39,6 +39,8 @@ else
 
     protected override void OnInitialized()
     {
+        GetCurrentUserName();
+
         try
         {
             games = GamePool.Games.Values;
