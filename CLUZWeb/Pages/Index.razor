@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using CLUZWeb.Models
 @inherits Base
 
 <p class="text-muted">List of games and details</p>
@@ -33,3 +34,37 @@ else
     </button>
 </div>
 
+@code{
+    private IEnumerable<Game> games;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            games = GamePool.Games.Values;
+
+            GamePool.GamePoolEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
+        }
+        catch
+        {
+            games = new List<Game>();
+        }
+    }
+
+    private void Create()
+    {
+        NavigationManager.NavigateTo("/create");
+    }
+
+    private void Join(Game game)
+    {
+        if (!game.PlayerInGame(GetCurrentUserGuid()))
+        {
+            NavigationManager.NavigateTo($"/join/{game.Guid}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"/gameroom/{game.Guid}");
+        }
+    }
+}

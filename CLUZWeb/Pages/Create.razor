@@ -1,4 +1,5 @@
 ﻿@page "/create"
+@using CLUZWeb.Models
 @inherits Base
 
 <h2>Create</h2>
@@ -24,4 +25,21 @@
     </div>
 </EditForm>
 
+@code{
+    private CreateGame _createGameModel = new CreateGame();
+
+    private void HandleValidSubmit()
+    {
+        if (GamePool.GameExists(_createGameModel.Name))
+        {
+            ShowInfo("Game", "Game exists", InfoType.Error);
+        }
+        else
+        {
+            GamePool.Add(_createGameModel.Name, _createGameModel.Password, GetCurrentUserGuid());
+            //Logger.LogInformation($"{_createGameModel.Name} game added");
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}
 

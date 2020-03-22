@@ -13,17 +13,23 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Sotsera.Blazor.Toaster.Core.Models;
+using Microsoft.AspNetCore.Authentication;
+using System.Collections.Generic;
+using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace CLUZWeb
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+        public IConfiguration Configuration { get; }
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
+            _env = env;
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -43,16 +49,49 @@ namespace CLUZWeb
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = "636140980557785";
-                facebookOptions.AppSecret = "ea41eaf1c629d9561d041e882b3823f1";
+                if (_env.IsDevelopment())
+                {
+                    facebookOptions.AppId = "2261377930833950";
+                    facebookOptions.AppSecret = "9d392997497949e7a1802d5e8ac90dd1";
+                }
+                else
+                {
+                    facebookOptions.AppId = "636140980557785";
+                    facebookOptions.AppSecret = "ea41eaf1c629d9561d041e882b3823f1";
+                }
             });
             services.AddAuthentication().AddGoogle(options =>
             {
-                IConfigurationSection googleAuthNSection =
-                    Configuration.GetSection("Authentication:Google");
+                if (_env.IsDevelopment())
+                {
+                    options.ClientId = "1053325521201-kgrjrv5h5ukkpd3dm6ul0gcs6n43l794.apps.googleusercontent.com";
+                    options.ClientSecret = "qQsZutXbIZsKug587KV3EfhN";
+                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                    options.ClaimActions.MapJsonKey("urn:google:locale", "locale", "string");
+                    options.SaveTokens = true;
 
-                options.ClientId = "515496798286-s5pofb2ls0g1jllr80u1rnmcdkres2ia.apps.googleusercontent.com";
-                options.ClientSecret = "sZPYEG-PrvJRZetBBWHubgLg";
+                    options.Events.OnCreatingTicket = ctx =>
+                    {
+                        List<AuthenticationToken> tokens = ctx.Properties.GetTokens().ToList();
+
+                        tokens.Add(new AuthenticationToken()
+                        {
+                            Name = "TicketCreated",
+                            Value = DateTime.UtcNow.ToString()
+                        });
+
+                        ctx.Properties.StoreTokens(tokens);
+
+                        return Task.CompletedTask;
+                    };
+
+                    options.Scope.Add("https://www.googleapis.com/auth/user.birthday.read");
+                }
+                else
+                {
+                    options.ClientId = "515496798286-s5pofb2ls0g1jllr80u1rnmcdkres2ia.apps.googleusercontent.com";
+                    options.ClientSecret = "sZPYEG-PrvJRZetBBWHubgLg";
+                }
             });
             services.AddToaster(config =>
             {
