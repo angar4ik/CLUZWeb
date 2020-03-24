@@ -17,7 +17,16 @@
                 <small class="form-text text-muted">Game pin</small>
             </div>
             <div class="content p-4">
-                <button class="btn btn-primary" type="submit">Join</button>
+                @if (IsJoining)
+                {
+                    
+                    <button class="btn btn-info disabled" disabled><div class="lds-ring"><div></div><div></div><div></div><div></div></div>Join</button>
+                }
+                else
+                {
+                    <button class="btn btn-info" type="submit">Join</button>
+                }
+                @*<button class="btn btn-primary" type="submit">Join</button>*@
             </div>
         </div>
     </div>
@@ -26,11 +35,12 @@
 @code{
     [Parameter]
     public Guid Guid { get; set; }
-
+    private bool IsJoining { get; set; } = false;
     private JoinGame _joinGameModel = new JoinGame();
 
     private void HandleValidSubmit()
     {
+        IsJoining = true;
         Game g = GamePool.Games[Guid];
         //check password and join the game
         if (g.GamePin == ComputeSha256Hash(_joinGameModel.Password)

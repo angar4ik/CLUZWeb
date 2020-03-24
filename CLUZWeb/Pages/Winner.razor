@@ -1,19 +1,59 @@
-﻿@page "/winner/{Input}"
+﻿@page "/winner/{Input}/{GuidToRemove:guid}"
+@using CLUZWeb.Models
 @inherits Base
 
 <div class="p-4 text-center">
     <h3>@Input won!</h3>
 </div>
 
+<table class="table table-hover center">
+    <thead>
+        <tr>
+            <th scope="col">Player</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in _players)
+        {
+            <tr class="table-active">
+                <th scope="row">@p.Name</th>
+                <td>@(Status(p))</td>
+            </tr>
+        }
+        </tbody>
+</table>
+
+<div class="p-4 text-center">
+    <button class="btn btn-primary" @onclick="@(() => { NavigationManager.NavigateTo("/"); GamePool.Games.Remove(GuidToRemove); })">
+        Continue
+    </button>
+</div>
+
 @code{
     [Parameter]
     public string Input { get; set; }
+    [Parameter]
+    public Guid GuidToRemove { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private Game _game;
+    private IEnumerable<Player> _players = new List<Player>();
+
+    protected override void OnInitialized()
     {
-        await base.OnAfterRenderAsync(firstRender);
-        await Task.Delay(10000);
-        NavigationManager.NavigateTo("/");
+        if (GamePool.Games.TryGetValue(GuidToRemove, out _game))
+            _players = _players = _game.Players.Values;
+
+        base.OnInitialized();
     }
 
+    private string Status(Player p)
+    {
+        if (p.Role == PlayerRole.Ghost)
+            return "KIA";
+        else if (p.Role == PlayerRole.Kicked)
+            return "Kicked";
+        else
+            return "Secret";
+    }
 }

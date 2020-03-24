@@ -441,7 +441,7 @@ namespace CLUZWeb.Models
                 && TimeFrame >= 2)
             {
                 IsEnded = true;
-                OnGameEndedEvent(new GameEndedEventArgs("Citizens"));
+                OnGameEndedEvent(new GameEndedEventArgs("Citizens", this.Guid));
 
             }
 
@@ -450,7 +450,7 @@ namespace CLUZWeb.Models
                 && Status == GameState.Locked)
             {
                 IsEnded = true;
-                OnGameEndedEvent(new GameEndedEventArgs("Mafia"));
+                OnGameEndedEvent(new GameEndedEventArgs("Mafia", this.Guid));
             }
 
             //Log.Information("Game {0} has {1} active players", g.Name, Helpers.Results.HowManyActiveInGame(g));

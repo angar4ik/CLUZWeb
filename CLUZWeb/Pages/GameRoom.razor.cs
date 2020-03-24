@@ -44,9 +44,9 @@ namespace CLUZWeb.Pages
 
                     GameEndedEventArgs winner = e as GameEndedEventArgs;
                     //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
-                    NavigationManager.NavigateTo($"/winner/{winner.Winner}");
-                    //NavigationManager.NavigateTo("/");
-                    GamePool.Games.Remove(_game.Guid);
+                    
+                    NavigationManager.NavigateTo($"/winner/{winner.Winner}/{winner.Guid}");
+                    //NavigationManager.NavigateTo("/"); 
                 };
                 
             }
