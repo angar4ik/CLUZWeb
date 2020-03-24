@@ -138,5 +138,13 @@ namespace CLUZWeb.Pages
                 return GameAction.None;
         }
 
+        private string IsGhost(Player p)
+        {
+            if(p.Role == PlayerRole.Ghost || p.Role == PlayerRole.Kicked)
+            {
+                return "ghost";
+            }
+            return "";
+        }
     }
 }
