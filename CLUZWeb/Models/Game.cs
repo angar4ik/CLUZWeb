@@ -61,7 +61,7 @@ namespace CLUZWeb.Models
 
         #region Props
         public DateTime ChangeTimeSpamp { get; set; } = DateTime.UtcNow;
-        public bool IsGameEnded { get; set; }
+        public bool IsEnded { get; set; }
         public string Winner { get; set; }
         public GameState Status
         {
@@ -98,7 +98,7 @@ namespace CLUZWeb.Models
             {
                 if (value != _timeFrame)
                 {
-                    if (!IsGameEnded)
+                    if (!IsEnded)
                         IsGameEnd();
 
                     if (value % 2 == 0)
@@ -337,7 +337,7 @@ namespace CLUZWeb.Models
             }
             #endregion
 
-            if (TimeFrame == 0 && Status == GameState.Locked && !IsGameEnded)
+            if (TimeFrame == 0 && Status == GameState.Locked && !IsEnded)
             {
                 #region First Day to Night (Raffle)
                 //Status = GameState.Locked;
@@ -348,7 +348,7 @@ namespace CLUZWeb.Models
                 #endregion
             }
 
-            else if (TimeFrame >= 1 && Status == GameState.Locked && !IsGameEnded)
+            else if (TimeFrame >= 1 && Status == GameState.Locked && !IsEnded)
             {
                 #region Regular Iteration
                 Task.Delay(2000);
@@ -440,7 +440,7 @@ namespace CLUZWeb.Models
                 && Status == GameState.Locked
                 && TimeFrame >= 2)
             {
-                IsGameEnded = true;
+                IsEnded = true;
                 OnGameEndedEvent(new GameEndedEventArgs("Citizens"));
 
             }
@@ -449,7 +449,7 @@ namespace CLUZWeb.Models
                 && HowManyActiveInGame() < MinimumPlayerCount - 1
                 && Status == GameState.Locked)
             {
-                IsGameEnded = true;
+                IsEnded = true;
                 OnGameEndedEvent(new GameEndedEventArgs("Mafia"));
             }
 

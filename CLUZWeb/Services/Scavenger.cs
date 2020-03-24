@@ -28,7 +28,7 @@ namespace CLUZWeb.Services
                 {
                     foreach (KeyValuePair<Guid, Game> entry in _gamePool.Games)
                     {
-                        if ((DateTime.UtcNow - entry.Value.ChangeTimeSpamp).TotalMinutes > 30 || entry.Value.IsGameEnded == true)
+                        if ((DateTime.UtcNow - entry.Value.ChangeTimeSpamp).TotalMinutes > 30 || entry.Value.IsEnded == true)
                         {
                             gameToRemove = entry.Value.Guid;
                         }
