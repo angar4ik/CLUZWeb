@@ -1,0 +1,25 @@
+﻿@if (Switch)
+{
+    <button class="btn btn-danger float-right" @onclick="() => { Switch = false; }">
+        @Name
+    </button>
+}
+else
+{
+    <button class="btn btn-danger float-right" @onclick="() => { Switch = true; }">
+        No
+    </button>
+    <button class="btn btn-info float-right" @onclick="OnClickCallback">
+        Yes
+    </button>
+}
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+
+    private bool Switch { get; set; } = true;
+
+}
