@@ -27,8 +27,4 @@
     <PackageReference Include="Sotsera.Blazor.Toaster" Version="3.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

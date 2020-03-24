@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CLUZWeb.Events;
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
@@ -25,17 +26,29 @@ namespace CLUZWeb.Pages
 
                 _game.GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
                 _game.PlayerPropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
-                _game.GameEndedEvent += (o, e) =>
-                {
-                    GameEndedEventArgs winner = e as GameEndedEventArgs;
-                    GamePool.Games.Remove(_game.Guid);
-                    NavigationManager.NavigateTo($"/winner/{winner.Winner}");
-                };
                 _game.GameEvent += (o, e) =>
                 {
                     GameEventArgs message = e as GameEventArgs;
                     ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
                 };
+                _game.GameEndedEvent += (o, e) =>
+                {
+                    _game.GamePropertyChangedEvent -= async (o, e) => await InvokeAsync(() => StateHasChanged());
+                    _game.PlayerPropertyChangedEvent -= async (o, e) => await InvokeAsync(() => StateHasChanged());
+
+                    _game.GameEvent -= (o, e) =>
+                    {
+                        GameEventArgs message = e as GameEventArgs;
+                        ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
+                    };
+
+                    GameEndedEventArgs winner = e as GameEndedEventArgs;
+                    //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
+                    NavigationManager.NavigateTo($"/winner/{winner.Winner}");
+                    //NavigationManager.NavigateTo("/");
+                    GamePool.Games.Remove(_game.Guid);
+                };
+                
             }
             else
             {
@@ -63,7 +76,7 @@ namespace CLUZWeb.Pages
             {
                 _player.State = PlayerState.Ready;
                 if (p.Role == PlayerRole.Mafia)
-                    ShowInfo("Game", "${p.Name} is mafia!", InfoType.Success);
+                    ShowInfo("Game", $"{p.Name} is mafia!", InfoType.Success);
                 else
                     ShowInfo("Game", $"{p.Name} NOT a mafia!", InfoType.Warn);
             }
@@ -124,5 +137,6 @@ namespace CLUZWeb.Pages
             else
                 return GameAction.None;
         }
+
     }
 }

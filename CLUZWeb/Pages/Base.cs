@@ -81,16 +81,16 @@ namespace CLUZWeb.Pages
             switch (type)
             {
                 case InfoType.Success:
-                    Toaster.Success(body, title);
+                    Toaster.Success(body);
                     break;
                 case InfoType.Info:
-                    Toaster.Info(body, title);
+                    Toaster.Info(body);
                     break;
                 case InfoType.Warn:
-                    Toaster.Warning(body, title);
+                    Toaster.Warning(body);
                     break;
                 case InfoType.Error:
-                    Toaster.Error(body, title);
+                    Toaster.Error(body);
                     break;
             }
                 

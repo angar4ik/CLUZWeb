@@ -155,7 +155,7 @@ namespace CLUZWeb.Models
         {
             ChangeTimeSpamp = DateTime.UtcNow;
 
-            if(propName == "Status")
+            if(propName == "Status" && Status == GameState.Locked)
             {
                 OnGameEvent(new GameEventArgs("Game", "Game has started", InfoType.Info));
             }
