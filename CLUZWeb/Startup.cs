@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace CLUZWeb
 {
@@ -174,10 +175,15 @@ namespace CLUZWeb
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
