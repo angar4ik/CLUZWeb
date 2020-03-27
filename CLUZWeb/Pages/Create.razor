@@ -36,9 +36,11 @@
         }
         else
         {
-            GamePool.Add(_createGameModel.Name, _createGameModel.Password, GetCurrentUserGuid());
+            Guid newGame = GamePool.Add(_createGameModel.Name, _createGameModel.Password, GetCurrentUserGuid());
             //Logger.LogInformation($"{_createGameModel.Name} game added");
-            NavigationManager.NavigateTo("/");
+            Player player = new Player(GetCurrentUserName(), GetCurrentUserGuid(), GetProfilePicture());
+            GamePool.Games[newGame].AddPlayer(player);
+            NavigationManager.NavigateTo($"/gameroom/{newGame}");
         }
     }
 }

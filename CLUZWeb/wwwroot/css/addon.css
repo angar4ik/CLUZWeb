@@ -1,4 +1,8 @@
-﻿.image-cropper {
+﻿.background-day {
+    background-color: antiquewhite;
+}
+
+.image-cropper {
     width: 60px;
     height: 60px;
     position: relative;

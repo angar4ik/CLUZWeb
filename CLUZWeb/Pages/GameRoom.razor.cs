@@ -33,15 +33,6 @@ namespace CLUZWeb.Pages
                 };
                 _game.GameEndedEvent += (o, e) =>
                 {
-                    _game.GamePropertyChangedEvent -= async (o, e) => await InvokeAsync(() => StateHasChanged());
-                    _game.PlayerPropertyChangedEvent -= async (o, e) => await InvokeAsync(() => StateHasChanged());
-
-                    _game.GameEvent -= (o, e) =>
-                    {
-                        GameEventArgs message = e as GameEventArgs;
-                        ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
-                    };
-
                     GameEndedEventArgs winner = e as GameEndedEventArgs;
                     //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
                     

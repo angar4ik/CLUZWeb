@@ -239,20 +239,6 @@ namespace CLUZWeb.Models
                 }
             }
         }
-        public void ResetPlayers()
-        {
-            //reset player states
-            foreach (Player p in this.Players.Values.ToList())
-            {
-                p.AllowedToVote = false;
-                p.KillRequest = false;
-                p.Role = PlayerRole.None;
-                p.State = PlayerState.Idle;
-                p.VoteCount = 0;
-            }
-
-            this.Players.Clear();
-        }
         public void ResetVotes()
         {
             foreach (Player p in this.Players.Values.ToList())
@@ -306,7 +292,7 @@ namespace CLUZWeb.Models
                 return builder.ToString();
             }
         }
-        public void IncrementTimeFrame()
+        public async void IncrementTimeFrame()
         {
             #region Kill Results
             foreach (Player p in Players.Values.ToList())
@@ -351,7 +337,7 @@ namespace CLUZWeb.Models
             else if (TimeFrame >= 1 && Status == GameState.Locked && !IsEnded)
             {
                 #region Regular Iteration
-                Task.Delay(2000);
+                await Task.Delay(2000);
                 TimeFrame += 1;
                 //Log.Information("GamePool: Iterating timeframe for '{game}'. Now is '{time}'", Name, g.TimeFrame);
                 //set IsGameVoting flag
@@ -454,10 +440,7 @@ namespace CLUZWeb.Models
             }
 
             //Log.Information("Game {0} has {1} active players", g.Name, Helpers.Results.HowManyActiveInGame(g));
-            int HowManyActiveInGame()
-            {
-                return Players.Values.ToList().Count(p => p.Role != PlayerRole.Ghost && p.Role != PlayerRole.Kicked);
-            }
+
 
             bool IsAnyMafiaLeftInGame()
             {
@@ -474,6 +457,16 @@ namespace CLUZWeb.Models
                     return false;
                 }
             }
+        }
+
+        int HowManyActiveInGame()
+        {
+            return Players.Values.ToList().Count(p => p.Role != PlayerRole.Ghost && p.Role != PlayerRole.Kicked);
+        }
+
+        int HowManyVotedInGame()
+        {
+            return Players.Values.ToList().Count(p => p.HasVoted == true);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace CLUZWeb.Services
             return Games.Values.ToList().Exists(g => g.Name == name);
         }
 
-        public void Add(string name, string gamePing, Guid adminGuid)
+        public Guid Add(string name, string gamePing, Guid adminGuid)
         {
             Guid newGuid = Guid.NewGuid();
             
@@ -30,6 +30,8 @@ namespace CLUZWeb.Services
 
             GamePoolEvent?.Invoke(this,
                 new PropertyChangedEventArgs(nameof(Game)));
+
+            return newGuid;
         }
 
         public void Remove(Guid guid)

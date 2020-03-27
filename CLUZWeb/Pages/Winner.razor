@@ -18,7 +18,7 @@
         {
             <tr class="table-active">
                 <th scope="row">@p.Name</th>
-                <td>@(Status(p))</td>
+                <td>@(p.Role.ToString())</td>
             </tr>
         }
         </tbody>
@@ -45,15 +45,5 @@
             _players = _players = _game.Players.Values;
 
         base.OnInitialized();
-    }
-
-    private string Status(Player p)
-    {
-        if (p.Role == PlayerRole.Ghost)
-            return "KIA";
-        else if (p.Role == PlayerRole.Kicked)
-            return "Kicked";
-        else
-            return "Secret";
     }
 }
