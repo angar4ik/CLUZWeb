@@ -1,18 +1,25 @@
 ﻿@page "/gameroom/{Guid:guid}"
+@using CLUZWeb.Models
 @inherits Base
 
 @if (_game != null && _player != null)
 {
-    @*<h5>Game: @_game.Name</h5>
-    <p>
-        <h6>
-            Name: @_player.Name
-        </h6>
-    </p>
-    <p>
-        <span class="badge badge-pill badge-primary">@_player.Role</span>
-        <span class="badge badge-pill badge-primary">@_game.TimeOfDay</span>
-    </p>*@
+    @if(_game.TimeFrame == 0)
+    {
+        <div class="sun-show"></div>
+    }
+    else if (_game.TimeOfDay == TimeOfDay.Day)
+    {
+        <div class="sun-show"></div>
+        <div class="moon-hide"></div>
+        //StateHasChanged();
+    }
+    else if(_game.TimeOfDay == TimeOfDay.Night)
+    {
+        <div class="sun-hide"></div>
+        <div class="moon-show"></div>
+        //StateHasChanged();
+    }
 }
 else
 {
@@ -29,33 +36,33 @@ else
     <ul class="list-group">
         @foreach (var p in _players)
         {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div class="align-items-center d-flex justify-content-between @IsGhost(p)">
-                @if (p.ProfilePicUrl != "")
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="align-items-center d-flex justify-content-between @IsGhost(p)">
+                    @if (p.ProfilePicUrl != "")
+                    {
+                        <div class="image-cropper margin-right">
+                            <img src="@p.ProfilePicUrl" alt="avatar" class="profile-pic">
+                        </div>
+                    }
+                    <div>
+                        <h5>@p.Name</h5>
+                        <p>
+                            @if (_game.AdminGuid == p.Guid)
+                            {
+                                <span class="badge badge-pill badge-primary">Admin</span>
+                            }
+                            <span class="badge badge-pill badge-primary">@p.State</span>
+                            <span class="badge badge-primary badge-pill">@p.VoteCount</span>
+                        </p>
+                    </div>
+                </div>
+                @if (GetActionBtnType() != Models.GameAction.None)
                 {
-                    <div class="image-cropper margin-right">
-                        <img src="@p.ProfilePicUrl" alt="avatar" class="profile-pic">
+                    <div>
+                        <button type="button" class="btn btn-info @(IsDisabledActionBtn(p)?"":"shaky-button")" disabled=@(IsDisabledActionBtn(p)) @onclick="() => Action(p)">@(GetActionBtnType().ToString())</button>
                     </div>
                 }
-                <div>
-                    <h5>@p.Name</h5>
-                    <p>
-                        @if (_game.AdminGuid == p.Guid)
-                        {
-                            <span class="badge badge-pill badge-primary">Admin</span>
-                        }
-                        <span class="badge badge-pill badge-primary">@p.State</span>
-                        <span class="badge badge-primary badge-pill">@p.VoteCount</span>
-                    </p>
-                </div>
-            </div>
-            @if (GetActionBtnType() != Models.GameAction.None)
-            {
-                <div>
-                    <button type="button" class="btn btn-info" disabled=@(IsDisabledActionBtn(p)) @onclick="() => Action(p)">@(GetActionBtnType().ToString())</button>
-                </div>
-            }
-        </li>
+            </li>
         }
     </ul>
 
@@ -69,12 +76,12 @@ else
 
         @if (_game.Status == Models.GameState.Locked)
         {
-            <button class="btn btn-primary" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
+            <button class="btn btn-primary @(IsDisabledReadyBtn()?"":"shaky-button")" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
                 Ready
             </button>
         }
 
         <Confirmation Name="Leave"
-                      OnClickCallback="@(() => Leave(_game))"/>
+                      OnClickCallback="@(() => Leave(_game))" />
     </div>
 }
