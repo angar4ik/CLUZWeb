@@ -1,0 +1,33 @@
+﻿@page "/feedback"
+@using CLUZWeb.Models
+@using Microsoft.AspNetCore.Identity.UI.Services
+@inherits Base
+@inject IEmailSender EmailSender
+
+<h3>Feedback</h3>
+
+<EditForm autocomplete="off" Model="@_feedbackform" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="content px-2">
+                <InputTextArea rows="10" class="form-control" placeholder="We're interested in your feedback" @bind-Value="@_feedbackform.Text" />
+            </div>
+
+            <div class="content p-4">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private FeedbackForm _feedbackform = new FeedbackForm();
+
+    private async void HandleValidSubmit()
+    {
+        await EmailSender.SendEmailAsync("4angar@gmail.com", "Cluz Feedback", _feedbackform.Text);
+        NavigationManager.NavigateTo("/");
+    }
+}
