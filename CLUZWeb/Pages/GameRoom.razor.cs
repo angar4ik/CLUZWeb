@@ -17,6 +17,8 @@ namespace CLUZWeb.Pages
         private Player _player;
         protected override void OnInitialized()
         {
+            base.OnInitialized();
+
             if (GamePool.Games.TryGetValue(Guid, out _game) &&
                 _game.Players.TryGetValue(GetCurrentUserGuid(), out _player))
             {

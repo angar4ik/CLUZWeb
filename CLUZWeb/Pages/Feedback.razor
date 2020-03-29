@@ -27,7 +27,9 @@
 
     private async void HandleValidSubmit()
     {
-        await EmailSender.SendEmailAsync("4angar@gmail.com", "Cluz Feedback", _feedbackform.Text);
+        string message = $"From: {GetCurrentUserEmail()}; {GetCurrentUserName()} <p>Message: { _feedbackform.Text}</p>";
+
+        await EmailSender.SendEmailAsync("4angar@gmail.com", "Cluz Feedback", message);
         NavigationManager.NavigateTo("/");
     }
 }

@@ -41,9 +41,9 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
+
         if (GamePool.Games.TryGetValue(GuidToRemove, out _game))
             _players = _players = _game.Players.Values;
-
-        base.OnInitialized();
     }
 }

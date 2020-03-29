@@ -24,6 +24,11 @@ namespace CLUZWeb.Pages
         [Inject] protected Sotsera.Blazor.Toaster.IToaster Toaster { get; set; }
         //[Inject] public ILogger<Base> Log { get; set; }
 
+        public string GetCurrentUserEmail()
+        {
+            return AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name;
+        }
+
         public Guid GetCurrentUserGuid()
         {
             return Guid.Parse(UserManager.GetUserId(AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User));
