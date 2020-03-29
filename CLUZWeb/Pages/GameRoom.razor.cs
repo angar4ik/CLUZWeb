@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using CLUZWeb.Events;
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace CLUZWeb.Pages
 {
@@ -128,7 +126,6 @@ namespace CLUZWeb.Pages
             else
                 return GameAction.None;
         }
-
         private string IsGhost(Player p)
         {
             if(p.Role == PlayerRole.Ghost || p.Role == PlayerRole.Kicked)

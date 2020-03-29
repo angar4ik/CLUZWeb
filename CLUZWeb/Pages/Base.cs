@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
-using System.Security.Claims;
 using CLUZWeb.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace CLUZWeb.Pages
 {
@@ -22,7 +22,7 @@ namespace CLUZWeb.Pages
         [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] public UserManager<IdentityUser> UserManager { get; set; }
         [Inject] protected Sotsera.Blazor.Toaster.IToaster Toaster { get; set; }
-        //[Inject] public ILogger Logger { get; set; }
+        //[Inject] public ILogger<Base> Log { get; set; }
 
         public Guid GetCurrentUserGuid()
         {

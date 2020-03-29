@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+using System;
 
 namespace CLUZWeb
 {
@@ -8,14 +11,36 @@ namespace CLUZWeb
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            Log.Logger = new LoggerConfiguration()
+           .MinimumLevel.Debug()
+           .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+           .Enrich.FromLogContext()
+           .WriteTo.Console()
+           .WriteTo.File("./Logs/cluz.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 31)
+           .CreateLogger();
+
+            try
+            {
+                Log.Information("Starting web host");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                //.ConfigureLogging(logging =>
+                //.ConfigureLogging((context, logging) =>
                 //{
                 //    logging.ClearProviders();
+                //    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
+                //    logging.AddDebug();
                 //    logging.AddConsole();
                 //})
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -29,6 +54,7 @@ namespace CLUZWeb
                     //            });
                     //        });
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseSerilog();
     }
 }
