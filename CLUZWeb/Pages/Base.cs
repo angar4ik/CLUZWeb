@@ -4,7 +4,6 @@ using CLUZWeb.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace CLUZWeb.Pages
 {
