@@ -18,12 +18,12 @@
             <header>
                 <nav class="navbar navbar-expand-lg static-top navbar-dark bg-primary">
                     <div class="container">
-                        <a class="navbar-brand" href="~/">Cluz</a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                                 aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <a href="/" class="navbar-brand">Cluz</a>
+                        <div class="navbar-collapse collapse">
                             @{
                                 var result = Engine.FindView(ViewContext, "_LoginPartial", isMainPage: false);
                             }
@@ -47,11 +47,11 @@
                     @RenderBody()
                 </main>
             </div>
-            <footer class="footer border-top text-muted">
+            @*<footer class="footer border-top text-muted">
                 <div class="container">
                     &copy; 2020 - CLUZWeb - <a asp-area="" asp-page="Privacy">Privacy</a>
                 </div>
-            </footer>
+            </footer>*@
             <script src="~/Identity/lib/jquery/dist/jquery.min.js"></script>
             <script src="~/Identity/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
             <script src="~/Identity/js/site.js" asp-append-version="true"></script>
