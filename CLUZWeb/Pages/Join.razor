@@ -61,6 +61,7 @@
         else
         {
             Toaster.Error("Password wrong or game is locked");
+            IsJoining = false;
         }
 
         static string ComputeSha256Hash(string rawData)
