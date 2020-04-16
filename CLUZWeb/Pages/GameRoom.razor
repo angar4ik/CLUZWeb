@@ -13,13 +13,11 @@
     {
         <div class="sun-show"></div>
         <div class="moon-hide"></div>
-        //StateHasChanged();
     }
     else if(_game.TimeOfDay == TimeOfDay.Night)
     {
         <div class="sun-hide"></div>
         <div class="moon-show"></div>
-        //StateHasChanged();
     }
 }
 else
@@ -68,17 +66,17 @@ else
     </ul>
 
     <div class="p-4">
-        @if (_game.AdminGuid == _player.Guid && !(_game.Status == Models.GameState.Locked))
-        {
-            <button class="btn btn-primary" @onclick="() => Start(_game)">
-                Start
-            </button>
-        }
-
         @if (_game.Status == Models.GameState.Locked)
         {
             <button class="btn btn-primary @(IsDisabledReadyBtn()?"":"shaky-button")" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
                 Ready
+            </button>
+        }
+
+        @if (_game.AdminGuid == _player.Guid && !(_game.Status == Models.GameState.Locked))
+        {
+            <button class="btn btn-primary" @onclick="() => Start(_game)">
+                Start
             </button>
         }
 

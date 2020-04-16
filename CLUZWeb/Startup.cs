@@ -19,6 +19,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.HttpOverrides;
+using Blazored.Modal;
 
 namespace CLUZWeb
 {
@@ -38,11 +39,11 @@ namespace CLUZWeb
         {
             services.Configure<KestrelServerOptions>(
                 Configuration.GetSection("Kestrel"));
-            services.AddHttpsRedirection(options =>
-                {
-                    options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-                    options.HttpsPort = 443;
-                });
+            //services.AddHttpsRedirection(options =>
+            //    {
+            //        options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+            //        options.HttpsPort = 443;
+            //    });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -131,6 +132,8 @@ namespace CLUZWeb
                 config.VisibleStateDuration = 4000;
                 config.ShowCloseIcon = false;
             });
+
+            services.AddBlazoredModal();
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);

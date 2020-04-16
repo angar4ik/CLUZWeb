@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Blazored.Modal.Services;
 using CLUZWeb.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -21,6 +22,7 @@ namespace CLUZWeb.Pages
         [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] public UserManager<IdentityUser> UserManager { get; set; }
         [Inject] protected Sotsera.Blazor.Toaster.IToaster Toaster { get; set; }
+        [Inject] public IModalService Modal { get; set; }
         //[Inject] public ILogger<Base> Log { get; set; }
 
         public string GetCurrentUserEmail()

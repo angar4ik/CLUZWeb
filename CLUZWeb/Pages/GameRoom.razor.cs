@@ -27,20 +27,20 @@ namespace CLUZWeb.Pages
         {
             #region Event Handlers
             _gameEventHandler = (o, e) =>
-                {
-                    GameEventArgs message = e as GameEventArgs;
-                    ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
-                };
+            {
+                GameEventArgs message = e as GameEventArgs;
+                ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
+            };
 
             _gameEndHandler =  (o, e) =>
-                {
-                    GameEndedEventArgs winner = e as GameEndedEventArgs;
-                    //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
-                    NavigationManager.NavigateTo($"/winner/{winner.Winner}/{winner.Guid}");
-                    //NavigationManager.NavigateTo("/"); 
-                };
+            {
+                GameEndedEventArgs winner = e as GameEndedEventArgs;
+                //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
+                NavigationManager.NavigateTo($"/winner/{winner.Winner}/{winner.Guid}");
+                //NavigationManager.NavigateTo("/"); 
+            };
 
-            _gamePropertyChangedEventHandler = async (o, e) => await InvokeAsync(() => StateHasChanged());
+            _gamePropertyChangedEventHandler = async (o, e) => {await InvokeAsync(() => StateHasChanged());
             _playerPropertyChangedEventHandler = async (o, e) => await InvokeAsync(() => StateHasChanged());
             #endregion 
 
