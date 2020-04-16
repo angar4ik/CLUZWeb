@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using CLUZWeb.Events;
 using CLUZWeb.Models;
 using Microsoft.AspNetCore.Components;
+using Serilog;
 
 namespace CLUZWeb.Pages
 {
@@ -15,31 +17,43 @@ namespace CLUZWeb.Pages
         private IEnumerable<Player> _players;
         private Game _game;
         private Player _player;
+
+        private EventHandler _gameEventHandler;
+        private EventHandler _gameEndHandler;
+        private PropertyChangedEventHandler _gamePropertyChangedEventHandler;
+        private PropertyChangedEventHandler _playerPropertyChangedEventHandler;
+
         protected override void OnInitialized()
         {
-            base.OnInitialized();
+            #region Event Handlers
+            _gameEventHandler = (o, e) =>
+                {
+                    GameEventArgs message = e as GameEventArgs;
+                    ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
+                };
+
+            _gameEndHandler =  (o, e) =>
+                {
+                    GameEndedEventArgs winner = e as GameEndedEventArgs;
+                    //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
+                    NavigationManager.NavigateTo($"/winner/{winner.Winner}/{winner.Guid}");
+                    //NavigationManager.NavigateTo("/"); 
+                };
+
+            _gamePropertyChangedEventHandler = async (o, e) => await InvokeAsync(() => StateHasChanged());
+            _playerPropertyChangedEventHandler = async (o, e) => await InvokeAsync(() => StateHasChanged());
+            #endregion 
 
             if (GamePool.Games.TryGetValue(Guid, out _game) &&
                 _game.Players.TryGetValue(GetCurrentUserGuid(), out _player))
             {
                 _players = _game.Players.Values;
 
-                _game.GamePropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
-                _game.PlayerPropertyChangedEvent += async (o, e) => await InvokeAsync(() => StateHasChanged());
-                _game.GameEvent += (o, e) =>
-                {
-                    GameEventArgs message = e as GameEventArgs;
-                    ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
-                };
-                _game.GameEndedEvent += (o, e) =>
-                {
-                    GameEndedEventArgs winner = e as GameEndedEventArgs;
-                    //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
-                    
-                    NavigationManager.NavigateTo($"/winner/{winner.Winner}/{winner.Guid}");
-                    //NavigationManager.NavigateTo("/"); 
-                };
-                
+                _game.GamePropertyChangedEvent += _gamePropertyChangedEventHandler;
+                _game.PlayerPropertyChangedEvent += _playerPropertyChangedEventHandler;
+                _game.GameEvent += _gameEventHandler;
+                _game.GameEndedEvent += _gameEndHandler;
+                Log.Information("Player {player} subscribed to events at {time}.", GetCurrentUserGuid(), DateTime.Now);
             }
             else
             {
@@ -135,6 +149,14 @@ namespace CLUZWeb.Pages
                 return "ghost";
             }
             return "";
+        }
+        public void Dispose()
+        {
+            _game.GameEvent -= _gameEventHandler;
+            _game.GameEndedEvent -= _gameEndHandler;
+            _game.GamePropertyChangedEvent -= _gamePropertyChangedEventHandler;
+            _game.PlayerPropertyChangedEvent -= _playerPropertyChangedEventHandler;
+            Log.Information("Player {player} unscribed from events at {time}.", GetCurrentUserGuid(), DateTime.Now);
         }
     }
 }

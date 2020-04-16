@@ -1,6 +1,7 @@
 ﻿@page "/gameroom/{Guid:guid}"
 @using CLUZWeb.Models
 @inherits Base
+@implements IDisposable
 
 @if (_game != null && _player != null)
 {
