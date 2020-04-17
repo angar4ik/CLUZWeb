@@ -3,9 +3,16 @@
 @inherits Base
 @implements IDisposable
 
+@if (_someoneVoting)
+{  
+    <div class="overlay" style="display: block;">
+        <div class="overlay-text">@(_players.ToList().Find(p => p.AllowedToVote == true).Name) is voting</div>
+    </div>
+}
+
 @if (_game != null && _player != null)
 {
-    @if(_game.TimeFrame == 0)
+    @if (_game.TimeFrame == 0)
     {
         <div class="sun-show"></div>
     }
@@ -14,7 +21,7 @@
         <div class="sun-show"></div>
         <div class="moon-hide"></div>
     }
-    else if(_game.TimeOfDay == TimeOfDay.Night)
+    else if (_game.TimeOfDay == TimeOfDay.Night)
     {
         <div class="sun-hide"></div>
         <div class="moon-show"></div>
@@ -67,11 +74,11 @@ else
 
     <div class="p-4">
         @*@if (_game.Status == Models.GameState.Locked)
-        {
-            <button class="btn btn-primary @(IsDisabledReadyBtn()?"":"shaky-button")" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
-                Ready
-            </button>
-        }*@
+            {
+                <button class="btn btn-primary @(IsDisabledReadyBtn()?"":"shaky-button")" disabled=@(IsDisabledReadyBtn()) @onclick="() => Ready(_player)">
+                    Ready
+                </button>
+            }*@
 
         @if (_game.AdminGuid == _player.Guid && !(_game.Status == Models.GameState.Locked))
         {
@@ -81,6 +88,6 @@ else
         }
 
         @*<Confirmation Name="Leave"
-                      OnClickCallback="@(() => Leave(_game))" />*@
+            OnClickCallback="@(() => Leave(_game))" />*@
     </div>
 }

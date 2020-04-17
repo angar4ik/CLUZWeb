@@ -22,6 +22,7 @@ namespace CLUZWeb.Pages
         private IEnumerable<Player> _players;
         private Game _game;
         private Player _player;
+        private bool _someoneVoting = false;
 
         private EventHandler _gameEventHandler;
         private EventHandler _gameEndHandler;
@@ -54,6 +55,8 @@ namespace CLUZWeb.Pages
                     parameters.Add("ModalButton", modalButton);
                     await Modal.Show<CustomModal>(modalTitle, parameters).Result;
                 }
+
+                _someoneVoting = false;
 
                 if (_game.Status == GameState.Locked && _game.TimeFrame == 0)
                 {
@@ -103,9 +106,12 @@ namespace CLUZWeb.Pages
                     if (_player.AllowedToVote == true && _player.HasVoted == false)
                     {
                         isModalOpen = true;
+                        _someoneVoting = false;
                         await ShowModalAsync("Vote", "It's your turn to vote. Select player to kick out from the list", "Continue");
                         isModalOpen = false;
                     }
+                    else
+                        _someoneVoting = true;
                 }
 
                 await InvokeAsync(() => StateHasChanged());

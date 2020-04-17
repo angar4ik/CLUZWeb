@@ -368,7 +368,7 @@ namespace CLUZWeb.Models
                         && IsPlayerActive(p) == true)
                     {
                         p.AllowedToVote = true;
-                        OnGameEvent(new GameEventArgs("Vote", $"{p.Name} is voting", InfoType.Info));
+                        //OnGameEvent(new GameEventArgs("Vote", $"{p.Name} is voting", InfoType.Info));
                         //await hubContext.Clients.All.SendAsync("SnackbarMessage", $"'{p.Name}' is voting", 3, Guid);
 
                         break;
