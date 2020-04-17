@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Blazored.Modal;
+using Blazored.Modal.Services;
 using CLUZWeb.Events;
 using CLUZWeb.Models;
+using CLUZWeb.Shared.ModalResources;
 using Microsoft.AspNetCore.Components;
 using Serilog;
 
@@ -32,7 +37,7 @@ namespace CLUZWeb.Pages
                 ShowInfo(message.EventHeader, message.EventBody, message.InfoType);
             };
 
-            _gameEndHandler =  (o, e) =>
+            _gameEndHandler = (o, e) =>
             {
                 GameEndedEventArgs winner = e as GameEndedEventArgs;
                 //ShowInfo("Game", $"Game has ended. Winner is/are {winner.Winner}", InfoType.Info);
@@ -40,9 +45,83 @@ namespace CLUZWeb.Pages
                 //NavigationManager.NavigateTo("/"); 
             };
 
-            _gamePropertyChangedEventHandler = async (o, e) => {await InvokeAsync(() => StateHasChanged());
-            _playerPropertyChangedEventHandler = async (o, e) => await InvokeAsync(() => StateHasChanged());
-            #endregion 
+            _gamePropertyChangedEventHandler = async (o, e) =>
+            {
+                async Task ShowModalAsync(string modalTitle, string modalText, string modalButton)
+                {
+                    ModalParameters parameters = new ModalParameters();
+                    parameters.Add("ModalText", modalText);
+                    parameters.Add("ModalButton", modalButton);
+                    await Modal.Show<CustomModal>(modalTitle, parameters).Result;
+                }
+
+                if (_game.Status == GameState.Locked && _game.TimeFrame == 0)
+                {
+                    await ShowModalAsync("Game", "Game is about to start. Are you ready?", "Ready");
+
+                    _player.State = PlayerState.Ready;
+                }
+
+                if (_game.Status == GameState.Locked && _game.TimeFrame > 0 && _game.TimeOfDay == TimeOfDay.Night)
+                {
+                    switch (_player.Role)
+                    {
+                        case PlayerRole.Citizen:
+                            await ShowModalAsync("Citizen", "It night time and you are Citizen. Hold tight!", "Dismiss");
+                            _player.State = PlayerState.Ready;
+                            break;
+                        case PlayerRole.Mafia:
+                            await ShowModalAsync("Mafia", "It night time and you are Mafia. Select player to kill from the list", "Continue");
+                            break;
+                        case PlayerRole.Police:
+                            await ShowModalAsync("Police", "It night time and you are Police. Guess who is Mafia from the list", "Continue");
+                            break;
+                        default:
+                            ShowModalAsync("Chill", "Just chill. They kicked you out", "Dismiss");
+                            _player.State = PlayerState.Ready;
+                            break;
+                    }
+                }
+
+                await InvokeAsync(() => StateHasChanged());
+            };
+
+            _playerPropertyChangedEventHandler = async (o, e) =>
+            {
+                async Task ShowModalAsync(string modalTitle, string modalText, string modalButton)
+                {
+                    ModalParameters parameters = new ModalParameters();
+                    parameters.Add("ModalText", modalText);
+                    parameters.Add("ModalButton", modalButton);
+                    await Modal.Show<CustomModal>(modalTitle, parameters).Result;
+                }
+
+                void ShowModal(string modalTitle, string modalText, string modalButton)
+                {
+                    ModalParameters parameters = new ModalParameters();
+                    parameters.Add("ModalText", modalText);
+                    parameters.Add("ModalButton", modalButton);
+                    Modal.Show<CustomModal>(modalTitle, parameters);
+                }
+
+                if (_game.IsGameVoting == true)
+                {
+
+                    if (_player.AllowedToVote == true && _player.HasVoted == false)
+                    {
+                        await ShowModalAsync("Vote", "It's your turn to vote. Select player to kick out from the list", "Continue");
+                    }
+                    else
+                    {
+                        //var p = _players.ToList().Find(p => p.AllowedToVote == true);
+                        //if (p != null)
+                        //    ShowModal("Vote", $"Now {p.Name} is voting", "Dismiss");
+                    }
+                }
+
+                await InvokeAsync(() => StateHasChanged());
+            };
+            #endregion
 
             if (GamePool.Games.TryGetValue(Guid, out _game) &&
                 _game.Players.TryGetValue(GetCurrentUserGuid(), out _player))
@@ -53,13 +132,14 @@ namespace CLUZWeb.Pages
                 _game.PlayerPropertyChangedEvent += _playerPropertyChangedEventHandler;
                 _game.GameEvent += _gameEventHandler;
                 _game.GameEndedEvent += _gameEndHandler;
-                Log.Information("Player {player} subscribed to events at {time}.", GetCurrentUserGuid(), DateTime.Now);
+                //Log.Information("Player {player} subscribed to events at {time}.", GetCurrentUserGuid(), DateTime.Now);
             }
             else
             {
                 _players = new List<Player>();
             }
         }
+
         private void Ready(Player p)
         {
             p.State = PlayerState.Ready;
@@ -152,11 +232,13 @@ namespace CLUZWeb.Pages
         }
         public void Dispose()
         {
-            _game.GameEvent -= _gameEventHandler;
-            _game.GameEndedEvent -= _gameEndHandler;
-            _game.GamePropertyChangedEvent -= _gamePropertyChangedEventHandler;
-            _game.PlayerPropertyChangedEvent -= _playerPropertyChangedEventHandler;
-            Log.Information("Player {player} unscribed from events at {time}.", GetCurrentUserGuid(), DateTime.Now);
+            if (GamePool.Games.TryGetValue(Guid, out _game))
+            {
+                _game.GameEvent -= _gameEventHandler;
+                _game.GameEndedEvent -= _gameEndHandler;
+                _game.GamePropertyChangedEvent -= _gamePropertyChangedEventHandler;
+                _game.PlayerPropertyChangedEvent -= _playerPropertyChangedEventHandler;
+            }
         }
     }
 }

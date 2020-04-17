@@ -1,0 +1,18 @@
+﻿<div>
+    <p>@ModalText</p>
+
+    <button @onclick="Ready" class="btn btn-primary">@ModalButton</button>
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter]
+    public string ModalText { get; set; }
+    [Parameter]
+    public string ModalButton { get; set; }
+
+    void Ready() => BlazoredModal.Close(ModalResult.Ok(true));
+
+}
