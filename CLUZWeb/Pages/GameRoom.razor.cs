@@ -88,6 +88,8 @@ namespace CLUZWeb.Pages
 
             _playerPropertyChangedEventHandler = async (o, e) =>
             {
+                bool isModalOpen = false;
+
                 async Task ShowModalAsync(string modalTitle, string modalText, string modalButton)
                 {
                     ModalParameters parameters = new ModalParameters();
@@ -96,26 +98,13 @@ namespace CLUZWeb.Pages
                     await Modal.Show<CustomModal>(modalTitle, parameters).Result;
                 }
 
-                void ShowModal(string modalTitle, string modalText, string modalButton)
+                if (_game.IsGameVoting == true && isModalOpen == false && e.PropertyName == "AllowedToVote")
                 {
-                    ModalParameters parameters = new ModalParameters();
-                    parameters.Add("ModalText", modalText);
-                    parameters.Add("ModalButton", modalButton);
-                    Modal.Show<CustomModal>(modalTitle, parameters);
-                }
-
-                if (_game.IsGameVoting == true)
-                {
-
                     if (_player.AllowedToVote == true && _player.HasVoted == false)
                     {
+                        isModalOpen = true;
                         await ShowModalAsync("Vote", "It's your turn to vote. Select player to kick out from the list", "Continue");
-                    }
-                    else
-                    {
-                        //var p = _players.ToList().Find(p => p.AllowedToVote == true);
-                        //if (p != null)
-                        //    ShowModal("Vote", $"Now {p.Name} is voting", "Dismiss");
+                        isModalOpen = false;
                     }
                 }
 

@@ -149,7 +149,7 @@ namespace CLUZWeb.Models
             }
 
             PlayerPropertyChangedEvent?.Invoke(this,
-                new PropertyChangedEventArgs(nameof(e)));
+                new PropertyChangedEventArgs(e.PropertyName));
         }
         private void GamePropertyChanged(string propName)
         {
