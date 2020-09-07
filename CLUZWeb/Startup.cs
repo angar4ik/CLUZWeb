@@ -57,13 +57,13 @@ namespace CLUZWeb
             {
                 if (_env.IsDevelopment())
                 {
-                    facebookOptions.AppId = "2261377930833950";
-                    facebookOptions.AppSecret = "9d392997497949e7a1802d5e8ac90dd1";
+                    facebookOptions.AppId = "";
+                    facebookOptions.AppSecret = "";
                 }
                 else
                 {
-                    facebookOptions.AppId = "636140980557785";
-                    facebookOptions.AppSecret = "ea41eaf1c629d9561d041e882b3823f1";
+                    facebookOptions.AppId = "";
+                    facebookOptions.AppSecret = "";
                 }
 
                 facebookOptions.ClaimActions.MapJsonKey("urn:facebook:name", "name", "string");
@@ -90,13 +90,13 @@ namespace CLUZWeb
             {
                 if (_env.IsDevelopment())
                 {
-                    options.ClientId = "1053325521201-kgrjrv5h5ukkpd3dm6ul0gcs6n43l794.apps.googleusercontent.com";
-                    options.ClientSecret = "qQsZutXbIZsKug587KV3EfhN";
+                    options.ClientId = "";
+                    options.ClientSecret = "";
                 }
                 else
                 {
-                    options.ClientId = "515496798286-s5pofb2ls0g1jllr80u1rnmcdkres2ia.apps.googleusercontent.com";
-                    options.ClientSecret = "sZPYEG-PrvJRZetBBWHubgLg";
+                    options.ClientId = "";
+                    options.ClientSecret = "";
                 }
 
                 options.ClaimActions.MapJsonKey("urn:google:name", "name", "string");
